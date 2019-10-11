@@ -1,0 +1,12 @@
+#ifndef QTRESTCLIENT_GLOBAL_H
+#define QTRESTCLIENT_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(QTRESTCLIENT_LIBRARY)
+#  define QTRESTCLIENT_EXPORT Q_DECL_EXPORT
+#else
+#  define QTRESTCLIENT_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // QTRESTCLIENT_GLOBAL_H
