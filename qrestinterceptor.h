@@ -7,8 +7,19 @@
 #include <QtPromise>
 #include <QByteArray>
 
-class QRestClient;
-class QRestRequest;
+class QNetworkReply;
+class QNetworkRequest;
+
+class QNetworkResponse : QObject
+{
+    Q_OBJECT
+
+public:
+    QNetworkResponse(QNetworkReply * reply);
+
+private:
+    QNetworkReply * reply;
+};
 
 class QTRESTCLIENT_EXPORT QRestInterceptor : public QObject
 {
@@ -24,10 +35,10 @@ public:
     }
 
 public:
-    virtual QtPromise::QPromise<QByteArray> intercept(QRestRequest & request) = 0;
+    virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request) = 0;
 
 protected:
-    QtPromise::QPromise<QByteArray> processNext(QRestRequest & request);
+    QtPromise::QPromise<QNetworkReply *> processNext(QNetworkRequest & request);
 
 private:
     QRestInterceptor * next_;

@@ -9,7 +9,7 @@ QRestInterceptor::~QRestInterceptor()
 {
 }
 
-QtPromise::QPromise<QByteArray> QRestInterceptor::processNext(QRestRequest & request)
+QtPromise::QPromise<QNetworkReply *> QRestInterceptor::processNext(QNetworkRequest & request)
 {
     return next_->intercept(request);
 }

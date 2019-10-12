@@ -30,10 +30,11 @@ SOURCES += \
 
 HEADERS += \
     QtRestClient_global.h \
+    qdebugsignal.h \
     qjsonwrapperconvertor.h \
     qrestarg.h \
     qrestclient.h \
-    qresterror.h \
+    qrestexception.h \
     qrestinterceptor.h \
     qrestjson.h \
     qrestjsonresultconverter.h \

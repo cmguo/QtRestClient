@@ -55,7 +55,7 @@ public:
     static void test();
 
 private:
-    virtual QtPromise::QPromise<QByteArray> intercept(QRestRequest & request);
+    virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request);
 
 private:
     QNetworkAccessManager * http_;

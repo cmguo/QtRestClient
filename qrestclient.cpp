@@ -1,5 +1,6 @@
 #include "qrestclient.h"
 #include "qrestarg.h"
+#include "qrestexception.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -11,6 +12,7 @@ QRestClient::QRestClient(char const * baseUrl)
     , base_url_(baseUrl)
     , interceptors_(this)
 {
+    //http_->setRedirectPolicy(QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy);
 }
 
 void QRestClient::addInterceptor(QRestInterceptor *interceptor)
@@ -22,16 +24,27 @@ void QRestClient::addInterceptor(QRestInterceptor *interceptor)
 
 QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 {
-    return interceptors_->intercept(req);
+    QNetworkRequest request;
+    req.toRequest(*this, request);
+    request.setAttribute(QNetworkRequest::User, static_cast<int>(req.method()));
+    request.setAttribute(QNetworkRequest::UserMax, req.body());
+    QtPromise::QPromise<QNetworkReply *> reply = interceptors_->intercept(request);
+    return reply.then([=](QNetworkReply * reply) {
+        reply->deleteLater();
+        if (reply->error() == QNetworkReply::NoError) {
+            return reply->readAll();
+        } else {
+            throw QRestException(reply->error(), reply->errorString());
+        }
+    });
 }
 
-QPromise<QByteArray> QRestClient::intercept(QRestRequest & req)
+QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & request)
 {
     QNetworkReply * reply = nullptr;
-    QNetworkRequest request;
-    request.setAttribute(QNetworkRequest::BackgroundRequestAttribute, true);
-    req.toRequest(*this, request);
-    switch (req.method()) {
+    int method = request.attribute(QNetworkRequest::User).toInt();
+    QByteArray body = request.attribute(QNetworkRequest::UserMax).toByteArray();
+    switch (method) {
     case QRestRequest::Head:
         reply = http_->head(request);
         break;
@@ -39,36 +52,24 @@ QPromise<QByteArray> QRestClient::intercept(QRestRequest & req)
         reply = http_->get(request);
         break;
     case QRestRequest::Put:
-        reply = http_->put(request, req.body());
+        reply = http_->put(request, body);
         break;
     case QRestRequest::Post:
-        reply = http_->post(request, req.body());
+        reply = http_->post(request, body);
         break;
     case QRestRequest::Delete:
         reply = http_->deleteResource(request);
         break;
     }
-    return QPromise<QByteArray>([reply](
-                                  const QPromiseResolve<QByteArray>& resolve,
-                                  const QPromiseReject<QByteArray>& reject) {
+    return QPromise<QNetworkReply *>([reply](
+                                  const QPromiseResolve<QNetworkReply *>& resolve) {
         auto callback = [=]() {
-            if (reply->error() == QNetworkReply::NoError) {
-                QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-                //if (statusCode.toInt() >= 300) {
-                //    auto reason = reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute);
-                //    reject(reinterpret_cast<QNetworkReply::NetworkError>(statusCode.toInt()));
-                //}
-                resolve(reply->readAll());
-                //resolve("{\"result\": 2, \"message\": \"ddd\", \"data\": {\"value1\": 5, \"value2\": \"abc\"}}");
-            } else {
-                reject(reply->error());
-            }
-            reply->deleteLater();
+            resolve(reply);
         };
         if (reply->isFinished()) {
             callback();
             return;
         }
-        QObject::connect(reply, &QNetworkReply::finished, callback);
+        QObject::connect(reply, &QNetworkReply::finished, reply, callback, Qt::QueuedConnection);
     });
 }

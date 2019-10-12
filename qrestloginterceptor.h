@@ -9,7 +9,7 @@ public:
     QRestLogInterceptor();
 
 private:
-    virtual QtPromise::QPromise<QByteArray> intercept(QRestRequest & request);
+    virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request);
 };
 
 #endif // QRESTLOGINTERCEPTOR_H

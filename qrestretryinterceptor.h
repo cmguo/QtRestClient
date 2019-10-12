@@ -2,6 +2,7 @@
 #define QRESTRETRYINTERCEPTOR_H
 
 #include "qrestinterceptor.h"
+#include <QNetworkReply>
 
 class QRestRetryInterceptor : public QRestInterceptor
 {
@@ -12,10 +13,14 @@ public:
 
 public:
     Q_PROPERTY(int times MEMBER times_)
-    Q_PROPERTY(QString interval MEMBER interval_)
+    Q_PROPERTY(int interval MEMBER interval_)
 
 private:
-    virtual QtPromise::QPromise<QByteArray> intercept(QRestRequest & request);
+    virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request);
+
+    QtPromise::QPromise<QNetworkReply *> process(QNetworkRequest & request, int times);
+
+    bool recoverable(QNetworkReply::NetworkError e);
 
 private:
     int times_;
