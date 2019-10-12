@@ -7,7 +7,7 @@
    + 路径（path）
    + 头域（header）
    + 数据（body）
-++ 可扩展的请求拦截器，内置下列拦截器：
++ 可扩展的请求拦截器，内置下列拦截器：
    + 重试
    + 网络日志
 + 数据序列化：目前仅 json
@@ -18,7 +18,7 @@
    + 自动重定向
 
 # 使用：
-定义报文错误信息：
+定义返回结果的报文格式（包括数据，QVariant类型）：
 ```cpp
 class QTestResult
 {
@@ -49,7 +49,7 @@ protected:
 
 Q_DECLARE_METATYPE(QTestResult)
 ```
-报文包装
+将报文的数据部分泛型化
 ```
 template <typename T>
 class QTestResultT : public QTestResult
