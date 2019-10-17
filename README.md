@@ -10,7 +10,7 @@
 + 可扩展的请求拦截器，内置下列拦截器：
    + 重试
    + 网络日志
-+ 数据序列化：目前仅 json
++ 数据序列化：目前仅 json [QtJsonSerializer](https://github.com/Skycoder42/QtJsonSerializer)
 + 异常通道，将带错误码的报文中的错误转换为异常
 + 异步：与[QtPromise](https://github.com/simonbrunel/qtpromise)结合，返回未来的（promise）数据
 + 简化REST服务定义：通过预编译宏简化服务接口实现
