@@ -44,6 +44,13 @@ HEADERS += \
     qrestservice.h \
     qtestdata.h
 
+includes.files = $$PWD/*.h $$PWD/*.hpp
+win32 {
+    includes.path = $$[QT_INSTALL_HEADERS]/QtRestClient
+    target.path = $$[QT_INSTALL_LIBS]
+}
+INSTALLS += includes
+
 # Default rules for deployment.
 unix {
     target.path = /usr/lib

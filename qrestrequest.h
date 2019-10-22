@@ -6,6 +6,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <map>
+#include <vector>
 
 class QNetworkRequest;
 class QRestArg;

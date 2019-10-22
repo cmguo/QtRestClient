@@ -58,14 +58,14 @@ template <typename T>
 class QTestResultT : public QTestResult
 {
 public:
-    T const data() const
+    T && data() const
     {
-        return data_.value<T>();
+        return std::move(*data_.value<T*>());
     }
 
-    void setData(T const & data)
+    void setData(T && data)
     {
-        data_ = QVariant::fromValue(data);
+        data_ = QVariant::fromValue(std::forward<T>(data));
     }
 };
 
@@ -79,7 +79,7 @@ class QTRESTCLIENT_EXPORT QTestService : public QRestService
 public:
     Q_REST_RESULT_WRAPPER(QTestResultT)
 
-    Q_REST_KEY(K1, "k1") // 定义参数的名称，可以用于Query、Header等
+    Q_REST_KEY(K1, "k1")
     Q_REST_KEY(Ticket, "ticket")
 
 public:

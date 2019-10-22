@@ -37,34 +37,37 @@ static int signalToMethod(const QMetaObject *metaObject, int index)
 
 static void showObject(QObject *caller, int signal_index, const QString &msg, bool signal)
 {
-    if (!caller->inherits("QNetworkReply"))
+    if (!caller->inherits("QAxObject"))
         return;
     const QMetaObject *metaObject = caller->metaObject();
     if (signal)
         signal_index = signalToMethod(metaObject, signal_index);
     QMetaMethod member = metaObject->method(signal_index);
-    qDebug() << metaObject->className() << (void*)caller << msg << qPrintable(member.name());
+    qDebug() << metaObject->className() << static_cast<void*>(caller) << msg << qPrintable(member.name());
 }
 
 static void onSignalBegin(QObject *caller, int signal_index, void **argv)
 {
-   showObject(caller, signal_index, "onSignalBegin", true);
+    (void)argv;
+    showObject(caller, signal_index, "onSignalBegin", true);
 }
 
 static void onSlotBegin(QObject *caller, int signal_index, void **argv)
 {
-   showObject(caller, signal_index, "onSlotBegin", false);
+    (void)argv;
+    showObject(caller, signal_index, "onSlotBegin", false);
 }
 
 void qDebugSignals()
 {
-   static QSignalSpyCallbackSet set = { onSignalBegin, onSlotBegin, 0, 0 };
-   QLibrary qtcore("Qt5Cored");
-   register_spy_callbacks reg = (register_spy_callbacks)qtcore.resolve("?qt_register_signal_spy_callbacks@@YAXAEBUQSignalSpyCallbackSet@@@Z");
+    static QSignalSpyCallbackSet set = { onSignalBegin, onSlotBegin, nullptr, nullptr };
+    QLibrary qtcore("Qt5Cored");
+    register_spy_callbacks reg = reinterpret_cast<register_spy_callbacks>(
+                qtcore.resolve("?qt_register_signal_spy_callbacks@@YAXAEBUQSignalSpyCallbackSet@@@Z"));
 
-   if (reg) {
-      reg(set);
-   }
+    if (reg) {
+        reg(set);
+    }
 }
 
 #endif // QDEBUGSIGNAL_H
