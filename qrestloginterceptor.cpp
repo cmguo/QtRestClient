@@ -32,8 +32,11 @@ QtPromise::QPromise<QNetworkReply *> QRestLogInterceptor::intercept(QNetworkRequ
         for (auto h : reply->rawHeaderPairs())
             qDebug().noquote() << h.first + ":" << h.second;
         static char body[2048];
-        body[reply->peek(body, sizeof(body) - 1)] = 0;
-        qDebug().nospace() << "\n" << body;
+        int n = static_cast<int>(reply->peek(body, sizeof(body) - 1));
+        if (n >= 0) {
+            body[n] = 0;
+            qDebug().nospace() << "\n" << body;
+        }
     });
 }
 

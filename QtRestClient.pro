@@ -22,6 +22,7 @@ SOURCES += \
     qrestarg.cpp \
     qrestclient.cpp \
     qrestinterceptor.cpp \
+    qrestjson.cpp \
     qrestloginterceptor.cpp \
     qrestrequest.cpp \
     qrestretryinterceptor.cpp \

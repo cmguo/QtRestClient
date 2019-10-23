@@ -7,10 +7,11 @@
 
 using namespace QtPromise;
 
-QRestClient::QRestClient(char const * baseUrl)
+QRestClient::QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags)
     : http_(new QNetworkAccessManager())
     , base_url_(baseUrl)
     , interceptors_(this)
+    , json_(jsonFlags)
 {
     //http_->setRedirectPolicy(QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy);
 }

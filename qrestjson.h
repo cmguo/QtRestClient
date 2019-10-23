@@ -9,11 +9,17 @@
 class QRestJson
 {
 public:
-    QRestJson()
-    {
-        serializer_.addJsonTypeConverter(
-                    QJsonTypeConverterStandardFactory<QJsonWrapperConverter>().createConverter());
-    }
+    enum Flag {
+        None = 0,
+        AllowNull = 1,
+        AllProperties = 2,
+        NoExtraProperties = 4,
+    };
+
+    Q_DECLARE_FLAGS(Flags, Flag)
+
+public:
+    QRestJson(Flags flags = None);
 
 public:
     template<typename T>

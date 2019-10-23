@@ -14,7 +14,7 @@ class QNetworkAccessManager;
 class QTRESTCLIENT_EXPORT QRestClient : QRestInterceptor
 {
 public:
-    QRestClient(char const * baseUrl);
+    QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags = QRestJson::None);
 
 public:
     void addInterceptor(QRestInterceptor * interceptor);
