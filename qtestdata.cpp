@@ -19,5 +19,7 @@ void QTestService::stest()
     QTestService * service = new QTestService();
     service->test2().then([](QTestData d) {
         (void)d;
+    }).tapFail([](std::exception & e) {
+        qDebug() << e.what();
     }).wait();
 }

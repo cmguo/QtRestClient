@@ -10,17 +10,6 @@
 class QNetworkReply;
 class QNetworkRequest;
 
-class QNetworkResponse : QObject
-{
-    Q_OBJECT
-
-public:
-    QNetworkResponse(QNetworkReply * reply);
-
-private:
-    QNetworkReply * reply;
-};
-
 class QTRESTCLIENT_EXPORT QRestInterceptor : public QObject
 {
     Q_OBJECT
