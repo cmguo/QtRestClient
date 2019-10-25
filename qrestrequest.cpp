@@ -6,22 +6,6 @@
 
 QRestRequest::QRestRequest()
 {
-
-}
-
-QRestRequest::QRestRequest(Method method, char const * path, ...)
-    : method_(method)
-    , url_(path)
-    , query_(url_.query())
-{
-    va_list vl;
-    va_start(vl, path);
-    while (true) {
-        QRestArg const * arg = va_arg(vl, QRestArg const *);
-        if (arg == nullptr)
-            break;
-        args_.push_back(arg);
-    }
 }
 
 void QRestRequest::toRequest(QRestClient & client, QNetworkRequest &req)

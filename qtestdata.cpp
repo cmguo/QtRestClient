@@ -17,7 +17,7 @@ QTestResult::QTestResult()
 void QTestService::stest()
 {
     QTestService * service = new QTestService();
-    service->test(1, QString("ccc")).then([](QTestData d) {
+    service->test2().then([](QTestData d) {
         (void)d;
     }).wait();
 }

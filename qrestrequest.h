@@ -27,8 +27,6 @@ public:
 public:
     QRestRequest();
 
-    QRestRequest(Method method, char const * path, /*QRequestArg const & args*/ ...);
-
     template<typename ...Args>
     QRestRequest(Method method, char const * path, Args const & ...args)
         : method_(method)

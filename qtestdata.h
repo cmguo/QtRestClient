@@ -92,6 +92,7 @@ public:
 
 public:
     Q_REST_POST("test", test, QTestData(QQuery<K1>, QHeader<Ticket>))
+    Q_REST_POST("test2", test2, QTestData())
 };
 
 #endif // QTESTDATA_H
