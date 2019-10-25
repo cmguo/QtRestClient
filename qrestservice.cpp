@@ -9,3 +9,8 @@ QRestService::QRestService(char const * baseUrl, QObject *parent)
     client_->addInterceptor(new QRestLogInterceptor());
     client_->addInterceptor(new QRestRetryInterceptor());
 }
+
+void QRestService::addInterceptor(QRestInterceptor * interceptor)
+{
+    client_->addInterceptor(interceptor);
+}

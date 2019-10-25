@@ -15,9 +15,8 @@ class QTRESTCLIENT_EXPORT QRestService : public QObject
 public:
     explicit QRestService(char const * baseUrl, QObject *parent = nullptr);
 
-signals:
-
-public slots:
+protected:
+    void addInterceptor(QRestInterceptor * interceptor);
 
 protected:
     template<template<typename> class R, typename F>
