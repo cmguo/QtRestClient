@@ -18,6 +18,8 @@ public:
 protected:
     void addInterceptor(QRestInterceptor * interceptor);
 
+    void setJsonFlags(QRestJson::Flags flags);
+
 protected:
     template<template<typename> class R, typename F>
     class Function;

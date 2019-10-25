@@ -14,3 +14,8 @@ void QRestService::addInterceptor(QRestInterceptor * interceptor)
 {
     client_->addInterceptor(interceptor);
 }
+
+void QRestService::setJsonFlags(QRestJson::Flags flags)
+{
+    client_->json().setFlags(flags);
+}

@@ -2,14 +2,17 @@
 
 QRestJson::QRestJson(Flags flags)
 {
-    if (flags & AllowNull)
-        serializer_.setAllowDefaultNull(true);
+    setFlags(flags);
+    serializer_.addJsonTypeConverter(
+                QJsonTypeConverterStandardFactory<QJsonWrapperConverter>().createConverter());
+}
+
+void QRestJson::setFlags(Flags flags)
+{
+    serializer_.setAllowDefaultNull(flags & AllowNull);
     QJsonSerializer::ValidationFlags vflags;
     if (flags & AllProperties)
         vflags |= QJsonSerializer::AllProperties;
     if (flags & NoExtraProperties)
         vflags |= QJsonSerializer::NoExtraProperties;
-    serializer_.setValidationFlags(vflags);
-    serializer_.addJsonTypeConverter(
-                QJsonTypeConverterStandardFactory<QJsonWrapperConverter>().createConverter());
 }

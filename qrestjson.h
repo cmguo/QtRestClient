@@ -21,6 +21,8 @@ public:
 public:
     QRestJson(Flags flags = None);
 
+    void setFlags(Flags flags);
+
 public:
     template<typename T>
     QByteArray toJson(T const * t)
