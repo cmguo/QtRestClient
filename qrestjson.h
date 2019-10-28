@@ -1,12 +1,14 @@
 #ifndef QRESTJSON_H
 #define QRESTJSON_H
 
+#include "QtRestClient_global.h"
+
 #include "qjsonwrapperconvertor.h"
 
 #include <variant>
 #include <QtJsonSerializer/QJsonSerializer>
 
-class QRestJson
+class QTRESTCLIENT_EXPORT QRestJson
 {
 public:
     enum Flag {

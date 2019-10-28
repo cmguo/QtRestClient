@@ -34,6 +34,7 @@ HEADERS += \
     qdebugsignal.h \
     qjsonwrapperconvertor.h \
     qrestarg.h \
+    qrestbean.h \
     qrestclient.h \
     qrestexception.h \
     qrestinterceptor.h \

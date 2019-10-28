@@ -3,10 +3,11 @@
 
 #include "QtRestClient_global.h"
 #include "qrestjson.h"
+#include "qrestbean.h"
 
 #include <QObject>
 
-class QTestData
+class QTestSubData : QRestBean<QTestSubData>
 {
     Q_GADGET
 
@@ -15,11 +16,33 @@ public:
     Q_PROPERTY(QString value2 MEMBER value2_)
 
 public:
-    QTestData();
+    QTestSubData();
 
 private:
     int value1_;
     QString value2_;
+};
+
+Q_DECLARE_METATYPE(QTestSubData)
+
+class QTestData : QRestBean<QTestData>
+{
+    Q_GADGET
+
+public:
+    Q_PROPERTY(int value1 MEMBER value1_)
+    Q_PROPERTY(QString value2 MEMBER value2_)
+    Q_PROPERTY(QTestSubData subData MEMBER subData_)
+    Q_PROPERTY(QList<QTestSubData> subDatas MEMBER subDatas_)
+
+public:
+    QTestData();
+
+private:
+    int value1_ = 0;
+    QString value2_;
+    QTestSubData subData_;
+    QList<QTestSubData> subDatas_;
 };
 
 Q_DECLARE_METATYPE(QTestData)

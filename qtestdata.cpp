@@ -1,17 +1,21 @@
 #include "qtestdata.h"
 
+QTestSubData::QTestSubData()
+    : value1_(0)
+    , value2_("ccc")
+{
+}
+
 QTestData::QTestData()
     : value1_(0)
     , value2_("ccc")
 {
-    staticMetaObject.propertyCount();
 }
 
 QTestResult::QTestResult()
     : result_(0)
     , message_("ccc")
 {
-    staticMetaObject.propertyCount();
 }
 
 void QTestService::stest()
