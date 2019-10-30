@@ -46,6 +46,10 @@ HEADERS += \
     qrestservice.h \
     qtestdata.h
 
+CONFIG(debug, debug|release) {
+    win32: TARGET = $$join(TARGET,,,d)
+}
+
 includes.files = $$PWD/*.h $$PWD/*.hpp
 win32 {
     includes.path = $$[QT_INSTALL_HEADERS]/QtRestClient
@@ -64,7 +68,7 @@ INCLUDEPATH += $$PWD/../QtPromise/src
 INCLUDEPATH += $$PWD/../qtpromise/src/qtpromise $$PWD/../qtpromise/include
 DEPENDPATH += $$PWD/../qtpromise/src/qtpromise
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializerd
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializer
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializerd
 else:unix: LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializerd
 
