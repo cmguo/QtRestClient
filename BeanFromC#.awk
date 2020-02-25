@@ -5,6 +5,7 @@ BEGIN {
     classes = ""
     primitives["string"] = "QString"
     primitives["List"] = "QList"
+    primitives["Uri"] = "QString"
     print "#include <qrestbean.h>\n"
 }
 
