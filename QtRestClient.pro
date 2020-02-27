@@ -21,6 +21,7 @@ SOURCES += \
     qjsonwrapperconvertor.cpp \
     qrestarg.cpp \
     qrestclient.cpp \
+    qresthostinterceptor.cpp \
     qrestinterceptor.cpp \
     qrestjson.cpp \
     qrestloginterceptor.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     qrestbean.h \
     qrestclient.h \
     qrestexception.h \
+    qresthostinterceptor.h \
     qrestinterceptor.h \
     qrestjson.h \
     qrestjsonresultconverter.h \
