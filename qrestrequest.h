@@ -5,8 +5,8 @@
 
 #include <QUrl>
 #include <QUrlQuery>
-#include <map>
-#include <vector>
+#include <QMap>
+#include <QVector>
 
 class QNetworkRequest;
 class QRestArg;
@@ -71,7 +71,7 @@ public:
 
     void addHeader(char const * key, QString const & value)
     {
-        headers_.insert(std::make_pair(key, value));
+        headers_.insert(key, value);
     }
 
     void setBody(QByteArray const & body)
@@ -95,9 +95,9 @@ private:
 private:
     Method method_;
     QUrl url_;
-    std::vector<QRestArg const *> args_;
+    QVector<QRestArg const *> args_;
     QUrlQuery query_;
-    std::map<char const *, QString> headers_;
+    QMap<char const *, QString> headers_;
     QByteArray body_;
 };
 

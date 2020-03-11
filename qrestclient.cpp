@@ -23,6 +23,17 @@ void QRestClient::addInterceptor(QRestInterceptor *interceptor)
     interceptors_ = interceptor;
 }
 
+QVector<QRestInterceptor *> QRestClient::interceptors()
+{
+    QVector<QRestInterceptor *> vec;
+    QRestInterceptor* i = interceptors_;
+    while (i) {
+        vec.prepend(i);
+        i = i->next();
+    }
+    return vec;
+}
+
 QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 {
     QNetworkRequest request;

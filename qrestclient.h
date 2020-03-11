@@ -22,6 +22,8 @@ public:
 public:
     void addInterceptor(QRestInterceptor * interceptor);
 
+    QVector<QRestInterceptor *> interceptors();
+
 public:
     QtPromise::QPromise<QByteArray> request(QRestRequest & req);
 

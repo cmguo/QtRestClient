@@ -23,6 +23,11 @@ public:
         next_ = next;
     }
 
+    QRestInterceptor *next()
+    {
+        return next_;
+    }
+
 public:
     virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request) = 0;
 

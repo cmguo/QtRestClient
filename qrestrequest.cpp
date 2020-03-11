@@ -21,7 +21,7 @@ void QRestRequest::toRequest(QRestClient & client, QNetworkRequest &req)
         url = url_;
     url.setQuery(query_);
     req.setUrl(url);
-    for (auto h : headers_)
-        req.setRawHeader(h.first, h.second.toUtf8());
+    for (auto i = headers_.keyValueBegin(); i != headers_.keyValueEnd(); ++i)
+        req.setRawHeader((*i).first, (*i).second.toUtf8());
 }
 
