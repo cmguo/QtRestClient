@@ -13,12 +13,17 @@ class QRestJson;
 class QTRESTCLIENT_EXPORT QRestArg
 {
 public:
+    QRestArg() {}
+
     virtual ~QRestArg() {}
 
 public:
     virtual void apply(QRestJson & json, QRestRequest & req) const;
 
     virtual void apply(QRestRequest & req) const { (void) req; }
+
+private:
+    Q_DISABLE_COPY(QRestArg)
 };
 
 class QTRESTCLIENT_EXPORT QQueryBase : public QRestArg

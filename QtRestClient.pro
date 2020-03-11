@@ -37,10 +37,12 @@ HEADERS += \
     qrestarg.h \
     qrestbean.h \
     qrestclient.h \
+    qrestclient.hpp \
     qrestexception.h \
     qresthostinterceptor.h \
     qrestinterceptor.h \
     qrestjson.h \
+    qrestjson.hpp \
     qrestjsonresultconverter.h \
     qrestloginterceptor.h \
     qrestrequest.h \

@@ -6,12 +6,15 @@
 #include "qrestinterceptor.h"
 #include "qrestjson.h"
 
-#include <QtPromise>
 #include <QByteArray>
+
+namespace QtPromise {
+    template <typename T> class QPromise;
+}
 
 class QNetworkAccessManager;
 
-class QTRESTCLIENT_EXPORT QRestClient : QRestInterceptor
+class QTRESTCLIENT_EXPORT QRestClient : public QRestInterceptor
 {
 public:
     QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags = QRestJson::None);
@@ -23,23 +26,10 @@ public:
     QtPromise::QPromise<QByteArray> request(QRestRequest & req);
 
     template<template<typename> class R, typename T>
-    QtPromise::QPromise<T> request(QRestRequest & req)
-    {
-        typedef R<T> RT;
-        return request(req).then([this](QByteArray data){
-            RT rt = json_.fromJson<RT>(data);
-            rt.check();
-            return rt.data();
-        });
-    }
+    QtPromise::QPromise<T> request(QRestRequest & req);
 
     template<typename T>
-    QtPromise::QPromise<T> request(QRestRequest & req)
-    {
-        return request(req).then([this](QByteArray data){
-            return json_.fromJson<T>(data);
-        });
-    }
+    QtPromise::QPromise<T> request(QRestRequest & req);
 
     QString const & baseUrl() const
     {

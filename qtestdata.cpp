@@ -1,4 +1,5 @@
 #include "qtestdata.h"
+#include "qrestclient.hpp"
 
 QTestSubData::QTestSubData()
     : value1_(0)

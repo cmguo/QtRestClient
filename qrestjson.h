@@ -3,10 +3,7 @@
 
 #include "QtRestClient_global.h"
 
-#include "qjsonwrapperconvertor.h"
-
-#include <variant>
-#include <QtJsonSerializer/QJsonSerializer>
+class QJsonSerializer;
 
 class QTRESTCLIENT_EXPORT QRestJson
 {
@@ -23,29 +20,24 @@ public:
 public:
     QRestJson(Flags flags = None);
 
+    ~QRestJson();
+
     void setFlags(Flags flags);
 
 public:
     template<typename T>
-    QByteArray toJson(T const * t)
-    {
-        return toJson(*t);
-    }
+    QByteArray toJson(T const * t);
 
     template<typename T>
-    QByteArray toJson(T const & t)
-    {
-        return serializer_.serializeTo(t);
-    }
+    QByteArray toJson(T const & t);
 
     template<typename T>
-    T fromJson(QByteArray json)
-    {
-        return serializer_.deserializeFrom<T>(json);
-    }
+    T fromJson(QByteArray json);
 
 private:
-    QJsonSerializer serializer_;
+    Q_DISABLE_COPY(QRestJson)
+
+    QJsonSerializer* serializer_;
 };
 
 #define Q_REST_DECLARE_WRAPPER_TEMPLATE(SINGLE_ARG_TEMPLATE) \
