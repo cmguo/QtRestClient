@@ -6,6 +6,7 @@
 #include "qrestjson.h"
 
 #include <QVariant>
+#include <QIODevice>
 
 class QRestRequest;
 class QRestJson;
@@ -132,6 +133,26 @@ private:
 
 private:
     T value_;
+};
+
+template <char const * N>
+class QBody<QIODevice*, N> : public QBodyBase
+{
+public:
+    QBody(QIODevice* value)
+        : QBodyBase(N)
+        , value_(value)
+    {
+    }
+
+private:
+    virtual QByteArray getBody(QRestJson &) const
+    {
+        return value_->readAll();
+    }
+
+private:
+    QIODevice* value_;
 };
 
 #endif // QRESTARG_H
