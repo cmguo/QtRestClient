@@ -8,12 +8,11 @@ class QRestRetryInterceptor : public QRestInterceptor
 {
     Q_OBJECT
 
-public:
-    QRestRetryInterceptor();
-
-public:
     Q_PROPERTY(int times MEMBER times_)
     Q_PROPERTY(int interval MEMBER interval_)
+
+public:
+    QRestRetryInterceptor();
 
 private:
     virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request);

@@ -19,7 +19,7 @@ QPromise<QNetworkReply *> QRestRetryInterceptor::intercept(QNetworkRequest & req
 
 QPromise<QNetworkReply *> QRestRetryInterceptor::process(QNetworkRequest & request, int times)
 {
-    return processNext(request).then([this, times](QNetworkReply * reply){
+    return processNext(request).then([this, times](QNetworkReply * reply) {
         if (reply->error() == QNetworkReply::NoError) {
             return QPromise<QNetworkReply *>::resolve(reply);
         } else if (times == 0 || !recoverable(reply->error())) {

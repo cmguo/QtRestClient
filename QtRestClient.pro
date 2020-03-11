@@ -28,6 +28,7 @@ SOURCES += \
     qrestrequest.cpp \
     qrestretryinterceptor.cpp \
     qrestservice.cpp \
+    qresttimeoutinterceptor.cpp \
     qtestdata.cpp
 
 HEADERS += \
@@ -48,6 +49,7 @@ HEADERS += \
     qrestrequest.h \
     qrestretryinterceptor.h \
     qrestservice.h \
+    qresttimeoutinterceptor.h \
     qtestdata.h
 
 CONFIG(debug, debug|release) {

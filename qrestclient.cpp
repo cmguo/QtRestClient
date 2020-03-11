@@ -73,7 +73,7 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         reply = http_->deleteResource(request);
         break;
     }
-    return QPromise<QNetworkReply *>([reply](
+    QPromise<QNetworkReply *> result([reply](
                                   const QPromiseResolve<QNetworkReply *>& resolve) {
         auto callback = [=]() {
             resolve(reply);
@@ -84,4 +84,14 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         }
         QObject::connect(reply, &QNetworkReply::finished, reply, callback, Qt::QueuedConnection);
     });
+    QVariant timeout = request.attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1));
+    if (timeout.isValid()) {
+        return result.timeout(timeout.toInt()).fail([reply](QtPromise::QPromiseTimeoutException const & e) {
+            reply->disconnect(SIGNAL(finished()), reply);
+            reply->abort();
+            return reply;
+        });
+    } else {
+        return result;
+    }
 }
