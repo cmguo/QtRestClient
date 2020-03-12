@@ -1,5 +1,7 @@
 #include "qjsonwrapperconvertor.h"
 
+#include <QtJsonSerializer/QJsonSerializer>
+
 std::map<int, std::pair<char const *, int>> QJsonWrapperConverter::wrapTypes;
 
 void QJsonWrapperConverter::registerWrapper(int wrapType, char const * dataName, int dataType)

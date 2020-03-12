@@ -3,7 +3,7 @@
 
 #include "QtRestClient_global.h"
 
-#include <QtJsonSerializer/QJsonSerializer>
+#include <QtJsonSerializer/QJsonTypeConverter>
 #include <map>
 
 class QTRESTCLIENT_EXPORT QJsonWrapperConverter : public QJsonTypeConverter
