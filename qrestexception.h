@@ -18,7 +18,7 @@ public:
     }
 
 private:
-    virtual char const* what() const _NOEXCEPT
+    virtual char const* what() const noexcept
     {
         return msg_.data();
     }
