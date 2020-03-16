@@ -4,6 +4,8 @@
 
 #include <QNetworkRequest>
 
+extern QNetworkRequest::Attribute AttributeTimeout;
+
 QRestTimeoutInterceptor::QRestTimeoutInterceptor()
     : timeout_(10000)
 {
@@ -12,6 +14,6 @@ QRestTimeoutInterceptor::QRestTimeoutInterceptor()
 QtPromise::QPromise<QNetworkReply *> QRestTimeoutInterceptor::intercept(QNetworkRequest &request)
 {
     if (timeout_)
-        request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1), timeout_);
+        request.setAttribute(AttributeTimeout, timeout_);
     return processNext(request);
 }

@@ -51,5 +51,6 @@ QBodyBase::QBodyBase(char const * name)
 
 void QBodyBase::apply(QRestJson &json, QRestRequest &req) const
 {
+    req.addHeader("Content-Type", "application/json");
     req.setBody(getBody(json));
 }

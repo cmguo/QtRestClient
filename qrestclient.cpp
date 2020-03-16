@@ -7,6 +7,15 @@
 
 using namespace QtPromise;
 
+static QNetworkRequest::Attribute AttributeMethod =
+        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User);
+static QNetworkRequest::Attribute AttributeBody =
+        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1);
+
+extern QNetworkRequest::Attribute AttributeTimeout;
+QNetworkRequest::Attribute AttributeTimeout =
+        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 16);
+
 QRestClient::QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags)
     : http_(new QNetworkAccessManager())
     , base_url_(baseUrl)
@@ -14,6 +23,7 @@ QRestClient::QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags)
     , json_(jsonFlags)
 {
     //http_->setRedirectPolicy(QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy);
+    //http_->setNetworkAccessible(QNetworkAccessManager::Accessible);
 }
 
 void QRestClient::addInterceptor(QRestInterceptor *interceptor)
@@ -38,8 +48,8 @@ QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 {
     QNetworkRequest request;
     req.toRequest(*this, request);
-    request.setAttribute(QNetworkRequest::User, static_cast<int>(req.method()));
-    request.setAttribute(QNetworkRequest::UserMax, req.body());
+    request.setAttribute(AttributeMethod, static_cast<int>(req.method()));
+    request.setAttribute(AttributeBody, req.body());
     QtPromise::QPromise<QNetworkReply *> reply = interceptors_->intercept(request);
     return reply.then([=](QNetworkReply * reply) {
         reply->deleteLater();
@@ -54,8 +64,8 @@ QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & request)
 {
     QNetworkReply * reply = nullptr;
-    int method = request.attribute(QNetworkRequest::User).toInt();
-    QByteArray body = request.attribute(QNetworkRequest::UserMax).toByteArray();
+    int method = request.attribute(AttributeMethod).toInt();
+    QByteArray body = request.attribute(AttributeBody).toByteArray();
     switch (method) {
     case QRestRequest::Head:
         reply = http_->head(request);
@@ -84,9 +94,9 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         }
         QObject::connect(reply, &QNetworkReply::finished, reply, callback, Qt::QueuedConnection);
     });
-    QVariant timeout = request.attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1));
+    QVariant timeout = request.attribute(AttributeTimeout);
     if (timeout.isValid()) {
-        return result.timeout(timeout.toInt()).fail([reply](QtPromise::QPromiseTimeoutException const & e) {
+        return result.timeout(timeout.toInt()).fail([reply](QtPromise::QPromiseTimeoutException const &) {
             reply->disconnect(SIGNAL(finished()), reply);
             reply->abort();
             return reply;

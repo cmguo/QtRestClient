@@ -4,7 +4,10 @@
 
 #include <QNetworkRequest>
 
-QRestRequest::QRestRequest()
+QRestRequest::QRestRequest(QRestRequest::Method method, const char *url)
+    : method_(method)
+    , url_(url)
+    , query_(url_.query())
 {
 }
 

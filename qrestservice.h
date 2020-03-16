@@ -49,7 +49,7 @@ protected:
         char const * path_;
     };
 
-private:
+protected:
     QRestClient * client_;
 };
 

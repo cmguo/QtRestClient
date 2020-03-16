@@ -20,7 +20,7 @@ QByteArray QRestJson::toJson(T const & t)
 }
 
 template<typename T>
-T QRestJson::fromJson(QByteArray json)
+T QRestJson::fromJson(QByteArray const & json, T *)
 {
     return serializer_->deserializeFrom<T>(json);
 }

@@ -25,12 +25,11 @@ public:
     };
 
 public:
-    QRestRequest();
+    QRestRequest(Method method, char const * url);
 
     template<typename ...Args>
-    QRestRequest(Method method, char const * path, Args const & ...args)
-        : method_(method)
-        , url_(path)
+    QRestRequest(Method method, char const * url, Args const & ...args)
+        : QRestRequest(method, url)
     {
         storeArgs(args...);
     }

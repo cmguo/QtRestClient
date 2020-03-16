@@ -34,7 +34,11 @@ public:
     QByteArray toJson(T const & t);
 
     template<typename T>
-    T fromJson(QByteArray json);
+    T fromJson(QByteArray const & json, T * unused = nullptr);
+
+    void fromJson(QByteArray const & , void *)
+    {
+    }
 
 private:
     Q_DISABLE_COPY(QRestJson)
