@@ -12,10 +12,13 @@ static char const * methodNames[] = {
     "HEAD", "GET", "PUT", "POST", "DELETE"
 };
 
+extern QNetworkRequest::Attribute AttributeMethod;
+extern QNetworkRequest::Attribute AttributeBody;
+
 QtPromise::QPromise<QNetworkReply *> QRestLogInterceptor::intercept(QNetworkRequest & request)
 {
-    int method = request.attribute(QNetworkRequest::User).toInt();
-    QByteArray body = request.attribute(QNetworkRequest::UserMax).toByteArray();
+    int method = request.attribute(AttributeMethod).toInt();
+    QByteArray body = request.attribute(AttributeBody).toByteArray();
     qDebug().noquote() << methodNames[method] << request.url().toString();
     for (auto h : request.rawHeaderList())
         qDebug().noquote() << h + ":" << request.rawHeader(h);

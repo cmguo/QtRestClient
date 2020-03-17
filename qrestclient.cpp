@@ -7,12 +7,14 @@
 
 using namespace QtPromise;
 
-static QNetworkRequest::Attribute AttributeMethod =
-        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User);
-static QNetworkRequest::Attribute AttributeBody =
-        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1);
-
+extern QNetworkRequest::Attribute AttributeMethod;
+extern QNetworkRequest::Attribute AttributeBody;
 extern QNetworkRequest::Attribute AttributeTimeout;
+
+QNetworkRequest::Attribute AttributeMethod =
+        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User);
+QNetworkRequest::Attribute AttributeBody =
+        static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 1);
 QNetworkRequest::Attribute AttributeTimeout =
         static_cast<QNetworkRequest::Attribute>(QNetworkRequest::User + 16);
 
