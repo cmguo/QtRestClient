@@ -29,7 +29,7 @@ QHeaderBase::QHeaderBase(char const * name, QString value)
 
 void QHeaderBase::apply(QRestRequest &req) const
 {
-    req.addHeader(name_, value_);
+    req.setHeader(name_, value_.toUtf8());
 }
 
 QPathBase::QPathBase(char const * name, QString value)
@@ -40,8 +40,8 @@ QPathBase::QPathBase(char const * name, QString value)
 
 void QPathBase::apply(QRestRequest &req) const
 {
-    std::string name = std::string("{") + name_ + "}";
-    req.setUrlPath(req.url().path().replace(name.c_str(), value_));
+    QString name = QString("{") + name_ + "}";
+    req.setUrlPath(req.url().path().replace(name, value_));
 }
 
 QBodyBase::QBodyBase(char const * name)
@@ -51,6 +51,6 @@ QBodyBase::QBodyBase(char const * name)
 
 void QBodyBase::apply(QRestJson &json, QRestRequest &req) const
 {
-    req.addHeader("Content-Type", "application/json");
+    req.setHeader("Content-Type", "application/json");
     req.setBody(getBody(json));
 }

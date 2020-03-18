@@ -50,7 +50,12 @@ public:
 
     void setBaseUrl(QByteArray url);
 
-    void setBaseHeader(char const * key, QString const & value);
+    QMap<char const *, QByteArray> const & baseHeaders() const
+    {
+        return baseHeaders_;
+    }
+
+    void setBaseHeader(char const * key, QByteArray const & value);
 
     QRestJson & json()
     {
@@ -66,7 +71,7 @@ private:
 private:
     QNetworkAccessManager * http_;
     QByteArray baseUrl_;
-    QMap<char const *, QString> baseHeaders_;
+    QMap<char const *, QByteArray> baseHeaders_;
     QRestInterceptor * interceptors_;
     QRestJson json_;
 };

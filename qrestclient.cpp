@@ -33,12 +33,16 @@ void QRestClient::addInterceptor(QRestInterceptor *interceptor)
     interceptor->setNext(interceptors_);
     interceptor->setParent(this);
     interceptors_ = interceptor;
+    interceptor->attached(this);
 }
 
 void QRestClient::removeInterceptor(QRestInterceptor *interceptor)
 {
     if (interceptors_ == interceptor) {
         interceptors_ = interceptor->next();
+        interceptor->setNext(nullptr);
+        interceptor->setParent(nullptr);
+        interceptor->detached(this);
         return;
     }
     QRestInterceptor* i = interceptors_;
@@ -46,7 +50,11 @@ void QRestClient::removeInterceptor(QRestInterceptor *interceptor)
         i = i->next();
     }
     if (i) {
+        interceptor->setParent(nullptr);
         i->setNext(i->next()->next());
+        interceptor->setNext(nullptr);
+        interceptor->setParent(nullptr);
+        interceptor->detached(this);
     }
 }
 
@@ -82,8 +90,6 @@ QVector<QRestInterceptor *> QRestClient::interceptors()
 QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 {
     QNetworkRequest request;
-    for (auto i = baseHeaders_.keyValueBegin(); i != baseHeaders_.keyValueEnd(); ++i)
-        request.setRawHeader((*i).first, (*i).second.toUtf8());
     req.toRequest(*this, request);
     request.setAttribute(AttributeMethod, static_cast<int>(req.method()));
     request.setAttribute(AttributeBody, req.body());
@@ -103,7 +109,7 @@ void QRestClient::setBaseUrl(QByteArray url)
     baseUrl_ = url;
 }
 
-void QRestClient::setBaseHeader(const char *key, const QString &value)
+void QRestClient::setBaseHeader(const char *key, const QByteArray &value)
 {
     baseHeaders_.insert(key, value);
 }

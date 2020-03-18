@@ -9,6 +9,7 @@
 
 class QNetworkReply;
 class QNetworkRequest;
+class QRestClient;
 
 class QTRESTCLIENT_EXPORT QRestInterceptor : public QObject
 {
@@ -29,6 +30,10 @@ public:
     }
 
 public:
+    virtual void attached(QRestClient * client);
+
+    virtual void detached(QRestClient * client);
+
     virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request) = 0;
 
 protected:

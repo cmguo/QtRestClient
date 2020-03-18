@@ -63,20 +63,11 @@ public:
     }
 
 public:
-    void setUrlPath(QString const & path)
-    {
-        url_.setPath(path);
-    }
+    void setUrlPath(QString const & path);
 
-    void addHeader(char const * key, QString const & value)
-    {
-        headers_.insert(key, value);
-    }
+    void setHeader(char const * key, QByteArray const & value);
 
-    void setBody(QByteArray const & body)
-    {
-        body_ = body;
-    }
+    void setBody(QByteArray const & body);
 
 public:
     void toRequest(QRestClient & client, QNetworkRequest & req);
@@ -96,7 +87,7 @@ private:
     QUrl url_;
     QVector<QRestArg const *> args_;
     QUrlQuery query_;
-    QMap<char const *, QString> headers_;
+    QMap<char const *, QByteArray> headers_;
     QByteArray body_;
 };
 
