@@ -16,10 +16,6 @@ public:
     explicit QRestService(char const * baseUrl, QObject *parent = nullptr);
 
 protected:
-    QVector<QRestInterceptor *> interceptors();
-
-    void addInterceptor(QRestInterceptor * interceptor);
-
     void setJsonFlags(QRestJson::Flags flags);
 
 protected:

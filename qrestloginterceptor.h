@@ -3,7 +3,7 @@
 
 #include "qrestinterceptor.h"
 
-class QRestLogInterceptor : public QRestInterceptor
+class QTRESTCLIENT_EXPORT QRestLogInterceptor : public QRestInterceptor
 {
 public:
     QRestLogInterceptor();

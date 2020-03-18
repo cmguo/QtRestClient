@@ -20,7 +20,7 @@ QNetworkRequest::Attribute AttributeTimeout =
 
 QRestClient::QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags)
     : http_(new QNetworkAccessManager())
-    , base_url_(baseUrl)
+    , baseUrl_(baseUrl)
     , interceptors_(this)
     , json_(jsonFlags)
 {
@@ -33,6 +33,39 @@ void QRestClient::addInterceptor(QRestInterceptor *interceptor)
     interceptor->setNext(interceptors_);
     interceptor->setParent(this);
     interceptors_ = interceptor;
+}
+
+void QRestClient::removeInterceptor(QRestInterceptor *interceptor)
+{
+    if (interceptors_ == interceptor) {
+        interceptors_ = interceptor->next();
+        return;
+    }
+    QRestInterceptor* i = interceptors_;
+    while (i && i->next() != interceptor) {
+        i = i->next();
+    }
+    if (i) {
+        i->setNext(i->next()->next());
+    }
+}
+
+QRestInterceptor *QRestClient::interceptor(const QMetaObject &meta)
+{
+    QRestInterceptor* i = interceptors_;
+    while (i && i->metaObject() != &meta) {
+        i = i->next();
+    }
+    return i;
+}
+
+QRestInterceptor *QRestClient::interceptor(const QByteArray &className)
+{
+    QRestInterceptor* i = interceptors_;
+    while (i && className != i->metaObject()->className()) {
+        i = i->next();
+    }
+    return i;
 }
 
 QVector<QRestInterceptor *> QRestClient::interceptors()
@@ -49,6 +82,8 @@ QVector<QRestInterceptor *> QRestClient::interceptors()
 QPromise<QByteArray> QRestClient::request(QRestRequest & req)
 {
     QNetworkRequest request;
+    for (auto i = baseHeaders_.keyValueBegin(); i != baseHeaders_.keyValueEnd(); ++i)
+        request.setRawHeader((*i).first, (*i).second.toUtf8());
     req.toRequest(*this, request);
     request.setAttribute(AttributeMethod, static_cast<int>(req.method()));
     request.setAttribute(AttributeBody, req.body());
@@ -61,6 +96,16 @@ QPromise<QByteArray> QRestClient::request(QRestRequest & req)
             throw QRestException(reply->error(), reply->errorString());
         }
     });
+}
+
+void QRestClient::setBaseUrl(QByteArray url)
+{
+    baseUrl_ = url;
+}
+
+void QRestClient::setBaseHeader(const char *key, const QString &value)
+{
+    baseHeaders_.insert(key, value);
 }
 
 QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & request)

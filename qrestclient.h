@@ -16,11 +16,21 @@ class QNetworkAccessManager;
 
 class QTRESTCLIENT_EXPORT QRestClient : public QRestInterceptor
 {
+    Q_OBJECT
+
+    Q_PROPERTY(QByteArray baseUrl READ baseUrl WRITE setBaseUrl)
+
 public:
     QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags = QRestJson::None);
 
 public:
     void addInterceptor(QRestInterceptor * interceptor);
+
+    void removeInterceptor(QRestInterceptor * interceptor);
+
+    QRestInterceptor* interceptor(QMetaObject const & meta);
+
+    QRestInterceptor* interceptor(QByteArray const & className);
 
     QVector<QRestInterceptor *> interceptors();
 
@@ -33,10 +43,14 @@ public:
     template<typename T>
     QtPromise::QPromise<T> request(QRestRequest & req);
 
-    QString const & baseUrl() const
+    QByteArray const & baseUrl() const
     {
-        return base_url_;
+        return baseUrl_;
     }
+
+    void setBaseUrl(QByteArray url);
+
+    void setBaseHeader(char const * key, QString const & value);
 
     QRestJson & json()
     {
@@ -51,7 +65,8 @@ private:
 
 private:
     QNetworkAccessManager * http_;
-    QString base_url_;
+    QByteArray baseUrl_;
+    QMap<char const *, QString> baseHeaders_;
     QRestInterceptor * interceptors_;
     QRestJson json_;
 };

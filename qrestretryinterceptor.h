@@ -4,7 +4,7 @@
 #include "qrestinterceptor.h"
 #include <QNetworkReply>
 
-class QRestRetryInterceptor : public QRestInterceptor
+class QTRESTCLIENT_EXPORT QRestRetryInterceptor : public QRestInterceptor
 {
     Q_OBJECT
 

@@ -3,9 +3,8 @@
 
 #include "qrestinterceptor.h"
 
-class QRestTimeoutInterceptor : public QRestInterceptor
+class QTRESTCLIENT_EXPORT QRestTimeoutInterceptor : public QRestInterceptor
 {
-
     Q_OBJECT
 
     Q_PROPERTY(int timeout MEMBER timeout_)
