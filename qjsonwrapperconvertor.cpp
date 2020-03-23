@@ -106,8 +106,10 @@ QVariant QJsonWrapperConverter::deserialize(int propertyType, const QJsonValue &
         if(propIndex != -1) {
             auto property = metaObject->property(propIndex);
             if (it.key().compare(dataMeta.first) == 0) {
-                auto subValue = helper->deserializeSubtype(dataMeta.second, it.value(), nullptr);
-                property.writeOnGadget(gadgetPtr, subValue);
+                if (dataMeta.second != qMetaTypeId<void>()) {
+                    auto subValue = helper->deserializeSubtype(dataMeta.second, it.value(), nullptr);
+                    property.writeOnGadget(gadgetPtr, subValue);
+                }
             } else {
                 auto subValue = helper->deserializeSubtype(property, it.value(), nullptr);
                 property.writeOnGadget(gadgetPtr, subValue);
