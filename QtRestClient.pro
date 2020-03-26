@@ -88,3 +88,11 @@ else:mac: LIBS += -F$$OUT_PWD/../QtJsonSerializer/lib -framework QtJsonSerialize
 else:unix: LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializer
 
 INCLUDEPATH += $$OUT_PWD/../QtJsonSerializer/include/
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../log4qt/release/ -llog4qt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../log4qt/debug/ -llog4qtd
+else:unix: LIBS += -L$$OUT_PWD/../log4qt/ -llog4qt
+
+INCLUDEPATH += $$PWD/../log4qt
+INCLUDEPATH += $$PWD/../log4qt/src
+DEPENDPATH += $$PWD/../log4qt
