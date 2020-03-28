@@ -19,6 +19,7 @@ class QTRESTCLIENT_EXPORT QRestClient : public QRestInterceptor
     Q_OBJECT
 
     Q_PROPERTY(QByteArray baseUrl READ baseUrl WRITE setBaseUrl)
+    Q_PROPERTY(QByteArray proxyUrl READ proxyUrl WRITE setProxyUrl)
 
 public:
     QRestClient(char const * baseUrl, QRestJson::Flags jsonFlags = QRestJson::None);
@@ -48,7 +49,7 @@ public:
         return baseUrl_;
     }
 
-    void setBaseUrl(QByteArray url);
+    void setBaseUrl(QByteArray const & url);
 
     QMap<char const *, QByteArray> const & baseHeaders() const
     {
@@ -56,6 +57,10 @@ public:
     }
 
     void setBaseHeader(char const * key, QByteArray const & value);
+
+    QByteArray proxyUrl() const;
+
+    void setProxyUrl(QByteArray const & url);
 
     QRestJson & json()
     {

@@ -3,6 +3,7 @@
 #include "qrestexception.h"
 
 #include <QNetworkAccessManager>
+#include <QNetworkProxy>
 #include <QNetworkReply>
 
 using namespace QtPromise;
@@ -104,7 +105,7 @@ QPromise<QByteArray> QRestClient::request(QRestRequest & req)
     });
 }
 
-void QRestClient::setBaseUrl(QByteArray url)
+void QRestClient::setBaseUrl(QByteArray const & url)
 {
     baseUrl_ = url;
 }
@@ -112,6 +113,34 @@ void QRestClient::setBaseUrl(QByteArray url)
 void QRestClient::setBaseHeader(const char *key, const QByteArray &value)
 {
     baseHeaders_.insert(key, value);
+}
+
+QByteArray QRestClient::proxyUrl() const
+{
+    QNetworkProxy proxy = http_->proxy();
+    QUrl proxyUrl;
+    if (proxy.type() == QNetworkProxy::HttpProxy)
+       proxyUrl.setScheme("http");
+    else if (proxy.type() == QNetworkProxy::Socks5Proxy)
+       proxyUrl.setScheme("sock5");
+    else
+        return nullptr;
+    proxyUrl.setHost(proxy.hostName());
+    proxyUrl.setPort(proxy.port());
+    return proxyUrl.toEncoded();
+}
+
+void QRestClient::setProxyUrl(const QByteArray &url)
+{
+    QUrl proxyUrl(url);
+    QNetworkProxy proxy;
+    if (proxyUrl.scheme().compare("http", Qt::CaseInsensitive) == 0)
+        proxy.setType(QNetworkProxy::HttpProxy);
+    else if (proxyUrl.scheme().compare("sock5", Qt::CaseInsensitive) == 0)
+        proxy.setType(QNetworkProxy::Socks5Proxy);
+    proxy.setHostName(proxyUrl.host());
+    proxy.setPort(static_cast<quint16>(proxyUrl.port()));
+    http_->setProxy(proxy);
 }
 
 QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & request)
