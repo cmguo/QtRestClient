@@ -19,7 +19,7 @@ template<typename T>
 QtPromise::QPromise<T> QRestClient::request(QRestRequest & req)
 {
     return request(req).then([this](QByteArray data){
-        return json_.fromJson(data, reinterpret_cast<T*>(nullptr));
+        return json_.fromJson(data, reinterpret_cast<T*>(0));
     });
 }
 
