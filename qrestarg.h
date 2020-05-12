@@ -27,6 +27,20 @@ private:
     Q_DISABLE_COPY(QRestArg)
 };
 
+class QVariantEx : public QVariant
+{
+public:
+    template<typename T>
+    QVariantEx(T const & t)
+    {
+        setValue(t);
+    }
+    QVariantEx(QVariantEx const & o)
+        : QVariant(o)
+    {
+    }
+};
+
 class QTRESTCLIENT_EXPORT QQueryBase : public QRestArg
 {
 public:
@@ -40,13 +54,23 @@ private:
     QString value_;
 };
 
-template <char const * const N, typename T = QVariant>
+template <char const * const N, typename T = QVariantEx>
 class QQuery : public QQueryBase
 {
 public:
-    template<typename T>
     QQuery(T const & value)
-        : QQueryBase(N, QVariant::fromValue(value).toString())
+        : QQueryBase(N, QVariantEx(value).toString())
+    {
+    }
+};
+
+template <char const * const N>
+class QQuery<N, QVariantEx> : public QQueryBase
+{
+public:
+    template <typename T>
+    QQuery(T const & value)
+        : QQueryBase(N, QVariantEx(value).toString())
     {
     }
 };
@@ -64,13 +88,23 @@ private:
     QString value_;
 };
 
-template <char const * N, typename T = QVariant>
+template <char const * N, typename T = QVariantEx>
 class QHeader : public QHeaderBase
 {
 public:
-    template<typename T>
     QHeader(T const & value)
-        : QHeaderBase(N, QVariant::fromValue(value).toString())
+        : QHeaderBase(N, QVariantEx(value).toString())
+    {
+    }
+};
+
+template <char const * const N>
+class QHeader<N, QVariantEx> : public QHeaderBase
+{
+public:
+    template <typename T>
+    QHeader(T const & value)
+        : QHeaderBase(N, QVariantEx(value).toString())
     {
     }
 };
@@ -88,13 +122,23 @@ private:
     QString value_;
 };
 
-template <char const * N, typename T = QVariant>
+template <char const * N, typename T = QVariantEx>
 class QPath : public QPathBase
 {
 public:
-    template<typename T>
     QPath(T const & value)
-        : QPathBase(N, QVariant::fromValue(value).toString())
+        : QPathBase(N, QVariantEx(value).toString())
+    {
+    }
+};
+
+template <char const * const N>
+class QPath<N, QVariantEx> : public QPathBase
+{
+public:
+    template <typename T>
+    QPath(T const & value)
+        : QPathBase(N, QVariantEx(value).toString())
     {
     }
 };
