@@ -40,7 +40,7 @@ private:
     QString value_;
 };
 
-template <char const * const N>
+template <char const * const N, typename T = QVariant>
 class QQuery : public QQueryBase
 {
 public:
@@ -64,7 +64,7 @@ private:
     QString value_;
 };
 
-template <char const * N>
+template <char const * N, typename T = QVariant>
 class QHeader : public QHeaderBase
 {
 public:
@@ -88,7 +88,7 @@ private:
     QString value_;
 };
 
-template <char const * N>
+template <char const * N, typename T = QVariant>
 class QPath : public QPathBase
 {
 public:
