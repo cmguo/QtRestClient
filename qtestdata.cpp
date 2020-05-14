@@ -1,5 +1,5 @@
 #include "qtestdata.h"
-#include "qrestclient.hpp"
+#include "qrestservice.hpp"
 
 QTestSubData::QTestSubData()
     : value1_(0)
@@ -22,7 +22,7 @@ QTestResult::QTestResult()
 void QTestService::stest()
 {
     QTestService * service = new QTestService();
-    service->test2().then([](QTestData d) {
+    service->invoke("test", QVariantList{1, 2}).then([](QVariant const & d) {
         (void)d;
     }).tapFail([](std::exception & e) {
         qDebug() << e.what();

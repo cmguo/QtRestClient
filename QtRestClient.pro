@@ -53,6 +53,7 @@ HEADERS += \
     qrestrequest.h \
     qrestretryinterceptor.h \
     qrestservice.h \
+    qrestservice.hpp \
     qresttimeoutinterceptor.h \
     qtestdata.h
 

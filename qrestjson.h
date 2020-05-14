@@ -3,8 +3,6 @@
 
 #include "QtRestClient_global.h"
 
-#include "qjsonwrapperconvertor.h"
-
 class QJsonSerializer;
 
 class QTRESTCLIENT_EXPORT QRestJson

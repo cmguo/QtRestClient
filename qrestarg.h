@@ -58,6 +58,7 @@ template <char const * const N, typename T = QVariantEx>
 class QQuery : public QQueryBase
 {
 public:
+    typedef T type;
     QQuery(T const & value)
         : QQueryBase(N, QVariantEx(value).toString())
     {
@@ -68,6 +69,7 @@ template <char const * const N>
 class QQuery<N, QVariantEx> : public QQueryBase
 {
 public:
+    typedef QVariant type;
     template <typename T>
     QQuery(T const & value)
         : QQueryBase(N, QVariantEx(value).toString())
@@ -92,6 +94,7 @@ template <char const * N, typename T = QVariantEx>
 class QHeader : public QHeaderBase
 {
 public:
+    typedef T type;
     QHeader(T const & value)
         : QHeaderBase(N, QVariantEx(value).toString())
     {
@@ -102,6 +105,7 @@ template <char const * const N>
 class QHeader<N, QVariantEx> : public QHeaderBase
 {
 public:
+    typedef QVariant type;
     template <typename T>
     QHeader(T const & value)
         : QHeaderBase(N, QVariantEx(value).toString())
@@ -126,6 +130,7 @@ template <char const * N, typename T = QVariantEx>
 class QPath : public QPathBase
 {
 public:
+    typedef T type;
     QPath(T const & value)
         : QPathBase(N, QVariantEx(value).toString())
     {
@@ -136,6 +141,7 @@ template <char const * const N>
 class QPath<N, QVariantEx> : public QPathBase
 {
 public:
+    typedef QVariant type;
     template <typename T>
     QPath(T const & value)
         : QPathBase(N, QVariantEx(value).toString())
@@ -163,6 +169,7 @@ template <typename T, char const * N = nullptr>
 class QBody : public QBodyBase
 {
 public:
+    typedef T type;
     QBody(T value)
         : QBodyBase(N)
         , value_(value)
@@ -183,6 +190,7 @@ template <char const * N>
 class QBody<QIODevice*, N> : public QBodyBase
 {
 public:
+    typedef QIODevice* type;
     QBody(QIODevice* value)
         : QBodyBase(N)
         , value_(value)
