@@ -36,6 +36,14 @@ QRestService::FunctionBase::FunctionBase(QRestService *service, QRestRequest::Me
     service_->functions_.insert(func, this);
 }
 
+QRestService::FunctionBase::FunctionBase(QRestService *service, QRestRequest::Method method, const char *path)
+    : service_(service)
+    , method_(method)
+    , path_(path)
+    , invoke_(nullptr)
+{
+}
+
 QtPromise::QPromise<QVariant> QRestService::FunctionBase::invoke(const QVariant &args) const
 {
     return invoke_(*this, args);

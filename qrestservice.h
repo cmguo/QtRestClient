@@ -31,6 +31,7 @@ protected:
                 FunctionBase const & func, QVariant args);
         FunctionBase(QRestService * service, QRestRequest::Method method, char const * path,
                      char const * func, invoke_t invoke);
+        FunctionBase(QRestService * service, QRestRequest::Method method, char const * path);
     protected:
         QRestService * service_;
         QRestRequest::Method method_;
@@ -45,6 +46,10 @@ protected:
     class Function<R, T (Args...)> : FunctionBase
     {
     public:
+        Function(QRestService * service, QRestRequest::Method method, char const * path)
+            : FunctionBase(service, method, path)
+        {
+        }
         Function(QRestService * service, QRestRequest::Method method, char const * path, char const * funcName)
             : FunctionBase(service, method, path, funcName, sinvoke)
         {
@@ -73,11 +78,19 @@ private:
     using Result = wrapper<T>;
 
 #define Q_REST_FUNCTION(method, path, func, signature) \
+    Function<Result, signature> const func = {this, QRestRequest::method, path};
+
+#define Q_RESTD_FUNCTION(method, path, func, signature) \
     Function<Result, signature> const func = {this, QRestRequest::method, path, #func};
 
 #define Q_REST_HEAD(path, func, signature) Q_REST_FUNCTION(Head, path, func, signature)
 #define Q_REST_GET(path, func, signature) Q_REST_FUNCTION(Get, path, func, signature)
 #define Q_REST_POST(path, func, signature) Q_REST_FUNCTION(Post, path, func, signature)
 #define Q_REST_PUT(path, func, signature) Q_REST_FUNCTION(Put, path, func, signature)
+
+#define Q_RESTD_HEAD(path, func, signature) Q_RESTD_FUNCTION(Head, path, func, signature)
+#define Q_RESTD_GET(path, func, signature) Q_RESTD_FUNCTION(Get, path, func, signature)
+#define Q_RESTD_POST(path, func, signature) Q_RESTD_FUNCTION(Post, path, func, signature)
+#define Q_RESTD_PUT(path, func, signature) Q_RESTD_FUNCTION(Put, path, func, signature)
 
 #endif // QRESTSERVICE_H

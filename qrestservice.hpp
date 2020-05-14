@@ -66,7 +66,7 @@ QtPromise::QPromise<QVariant> QRestService::Function<R, T (Args...)>::sinvoke(
     typename Func2Type::Arguments types;
     restpriv::fillArg<int>(types, 0, list);
     QVector<void*> vec;
-    QtPromise::QPromise<QVariant> ret = QtPromise::QPromise<QVariant>::reject(std::runtime_error("xxx"));
+    QtPromise::QPromise<QVariant> ret = QtPromise::QPromise<QVariant>::resolve(QVariant());
     vec.append(&ret);
     vec.append(const_cast<FunctionBase*>(&func));
     for (QVariant & l : list)
