@@ -25,6 +25,7 @@ SOURCES += \
     qrestinterceptor.cpp \
     qrestjson.cpp \
     qrestloginterceptor.cpp \
+    qrestmockinterceptor.cpp \
     qrestproxyinterceptor.cpp \
     qrestrequest.cpp \
     qrestretryinterceptor.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     qrestjson.hpp \
     qrestjsonresultconverter.h \
     qrestloginterceptor.h \
+    qrestmockinterceptor.h \
     qrestproxyinterceptor.h \
     qrestrequest.h \
     qrestretryinterceptor.h \
