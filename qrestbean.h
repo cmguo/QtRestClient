@@ -36,4 +36,16 @@ public:
     }
 };
 
+template <typename T>
+class QRestBeanInitializer {
+public:
+    QRestBeanInitializer() {
+        static bool init = false;
+        if (init)
+            return;
+        T::doInit();
+        init = true;
+    }
+};
+
 #endif // QRESTBEAN_H

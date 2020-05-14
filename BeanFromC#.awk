@@ -6,6 +6,7 @@ BEGIN {
     primitives["string"] = "QString"
     primitives["List"] = "QList"
     primitives["Uri"] = "QString"
+    primitives["Dictionary"] = "QMap"
     print "#include <qrestbean.h>\n"
 }
 
@@ -65,6 +66,7 @@ BEGIN {
 function print_class(c, d, depends2, templates2)
 {
     if (texts[c]) {
+        lastclass = c
         #if (!depends[c])
         #    print "no dep " c;
         #print c "->" depends[c]
@@ -78,7 +80,7 @@ function print_class(c, d, depends2, templates2)
         delete texts[c]
         split(templates[c], templates2, " ");
         for (d in templates2) {
-            template = template  "            " c "::register" templates2[d] "();\n"
+            template = template  "        " c "::register" templates2[d] "();\n"
         }
         print
         delete templates[c]
@@ -88,15 +90,14 @@ function print_class(c, d, depends2, templates2)
 }
 
 END {
-    template = "namespace {\n"
-    template = template "    struct initializer {\n"
-    template = template "        initializer() {\n"
+    template = template "static struct XXXInitializer : QRestBeanInitializer<XXXInitializer> {\n"
+    template = template "    static void doInit() {\n"
     split(classes, classes2, " ");
     for (c in classes2) {
         print_class(classes2[c])
     }
-    template = template "        }\n"
-    template = template "    } dummy;\n"
-    template = template "}\n"
+    template = template "    }\n"
+    template = template "} initXXX;\n"
+    gsub("XXX", lastclass, template)
     print template
 }
