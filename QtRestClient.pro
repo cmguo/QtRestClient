@@ -6,6 +6,8 @@ DEFINES += QTRESTCLIENT_LIBRARY
 
 CONFIG += c++17
 
+include(../config.pri)
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -56,18 +58,6 @@ HEADERS += \
     qrestservice.hpp \
     qresttimeoutinterceptor.h \
     qtestdata.h
-
-CONFIG(debug, debug|release) {
-    win32: TARGET = $$join(TARGET,,,d)
-}
-
-msvc:CONFIG(release, debug|release) {
-    QMAKE_CXXFLAGS+=/Zi
-    QMAKE_LFLAGS+= /INCREMENTAL:NO /Debug
-    target2.files = $$OUT_PWD/release/QtRestClient.pdb
-    target2.path = $$[QT_INSTALL_LIBS]
-    INSTALLS += target2
-}
 
 includes.files = $$PWD/*.h $$PWD/*.hpp
 win32 {
