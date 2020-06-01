@@ -32,7 +32,8 @@ public:
 public:
     static void registerList()
     {
-        QJsonSerializer::registerListConverters<T>();
+        if (!QMetaType::hasRegisteredConverterFunction<QVariantList, QList<T>>())
+            QJsonSerializer::registerListConverters<T>();
     }
 };
 
