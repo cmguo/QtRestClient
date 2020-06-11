@@ -7,6 +7,7 @@ QRestService::QRestService(char const * baseUrl, QObject *parent)
     : QObject(parent)
     , client_(new QRestClient(baseUrl))
 {
+    client_->setParent(this);
     client_->addInterceptor(new QRestTimeoutInterceptor());
     client_->addInterceptor(new QRestLogInterceptor());
     client_->addInterceptor(new QRestRetryInterceptor());
