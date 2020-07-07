@@ -12,9 +12,9 @@ private:
     virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request) override;
 
 private:
-    static void log(QNetworkRequest & request);
+    static void log(int seq, QNetworkRequest & request);
 
-    static void log(QNetworkReply & reply);
+    static void log(int seq, QNetworkReply & reply);
 };
 
 #endif // QRESTLOGINTERCEPTOR_H

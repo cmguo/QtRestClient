@@ -20,54 +20,66 @@ extern QNetworkRequest::Attribute AttributeBody;
 
 QtPromise::QPromise<QNetworkReply *> QRestLogInterceptor::intercept(QNetworkRequest & request)
 {
-    QtPromise::QPromise<QNetworkReply *> result = processNext(request).tap([](QNetworkReply * reply) {
-        log(*reply);
+    static int gseq = 0;
+    int seq = ++gseq;
+    QtPromise::QPromise<QNetworkReply *> result = processNext(request).tap([seq](QNetworkReply * reply) {
+        log(seq, *reply);
     });
-    log(request);
+    log(seq, request);
     return result;
 }
 
-void QRestLogInterceptor::log(QNetworkRequest &request)
+void QRestLogInterceptor::log(int seq, QNetworkRequest &request)
 {
     static Log4Qt::Logger& log = *Log4Qt::Logger::logger("QRestLogInterceptor");
     int method = request.attribute(AttributeMethod).toInt();
-    QByteArray body = request.attribute(AttributeBody).toByteArray();
-    QString msg = methodNames[method];
+    QString msg = QString::number(seq);
+    msg.append('-');
+    msg.append(methodNames[method]);
     msg.append(' ');
     msg.append(request.url().toString());
     msg.append('\n');
     for (auto h : request.rawHeaderList())
         msg.append(h + ':' + request.rawHeader(h) + '\n');
-    if (!body.isEmpty()) {
-        msg.append('\n');
-        msg.append(body);
+    if (log.isEnabledFor(Log4Qt::Level::DEBUG_INT)) {
+        QByteArray body = request.attribute(AttributeBody).toByteArray();
+        if (!body.isEmpty()) {
+            msg.append('\n');
+            msg.append(body);
+        }
     }
-    log.debug(msg);
+    msg.append('\n');
+    log.info(msg);
 }
 
-void QRestLogInterceptor::log(QNetworkReply &reply)
+void QRestLogInterceptor::log(int seq, QNetworkReply &reply)
 {
     static Log4Qt::Logger& log = *Log4Qt::Logger::logger("QRestLogInterceptor");
     if (reply.error() != QNetworkReply::NoError && reply.error() <= QNetworkReply::UnknownNetworkError) {
         char const * error = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(reply.error());
-        log.warn(error + (' ' + reply.errorString()));
+        log.warn(error + (' ' + reply.errorString()) + "\n");
         return;
     }
     QVariant statusCode = reply.attribute(QNetworkRequest::HttpStatusCodeAttribute);
     QVariant reasonPhrase = reply.attribute(QNetworkRequest::HttpReasonPhraseAttribute);
-    QString msg = statusCode.toString();
+    QString msg = QString::number(seq);
+    msg.append('-');
+    msg.append(statusCode.toString());
     msg.append(' ');
     msg.append(reasonPhrase.toString());
     msg.append('\n');
     for (auto h : reply.rawHeaderPairs())
         msg.append(h.first + ':' + h.second + '\n');
-    static char body[2048];
-    int n = static_cast<int>(reply.peek(body, sizeof(body) - 1));
-    if (n >= 0) {
-        body[n] = 0;
-        msg.append('\n');
-        msg.append(body);
+    if (log.isEnabledFor(Log4Qt::Level::DEBUG_INT)) {
+        static char body[2048];
+        int n = static_cast<int>(reply.peek(body, sizeof(body) - 1));
+        if (n >= 0) {
+            body[n] = 0;
+            msg.append('\n');
+            msg.append(body);
+        }
     }
-    log.debug(msg);
+    msg.append('\n');
+    log.info(msg);
 }
 

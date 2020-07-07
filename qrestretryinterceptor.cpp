@@ -28,7 +28,7 @@ QPromise<QNetworkReply *> QRestRetryInterceptor::process(QNetworkRequest & reque
             return QPromise<int>::resolve(0).delay(interval_).then([=]() {
                 QNetworkRequest request = reply->request();
                 reply->deleteLater();
-                qDebug() << "QRestRetryInterceptor retry " << (times_ - times + 1);
+                qWarning() << "QRestRetryInterceptor retry " << request.url() << (times_ - times + 1);
                 return process(request, times - 1);
             });
         }
