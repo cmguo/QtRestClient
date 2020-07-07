@@ -57,7 +57,13 @@ void QRestLogInterceptor::log(int seq, QNetworkReply &reply)
     static Log4Qt::Logger& log = *Log4Qt::Logger::logger("QRestLogInterceptor");
     if (reply.error() != QNetworkReply::NoError && reply.error() <= QNetworkReply::UnknownNetworkError) {
         char const * error = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(reply.error());
-        log.warn(error + (' ' + reply.errorString()) + "\n");
+        QString msg = QString::number(seq);
+        msg.append('-');
+        msg.append(error);
+        msg.append(' ');
+        msg.append(reply.errorString());
+        msg.append('\n');
+        log.warn(msg);
         return;
     }
     QVariant statusCode = reply.attribute(QNetworkRequest::HttpStatusCodeAttribute);
