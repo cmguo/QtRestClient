@@ -6,6 +6,12 @@
 
 namespace restpriv {
 
+    template<typename U>
+    inline bool fillArg(QtPrivate::List<>, int, QVariantList &)
+    {
+        return true;
+    }
+
     template<typename U, typename Arg, typename ...Args>
     inline bool fillArg(QtPrivate::List<Arg, Args...>, int index, QVariantList & list)
     {
@@ -18,12 +24,6 @@ namespace restpriv {
         if (!arg.convert(t))
             return false;
         return fillArg<U>(QtPrivate::List<Args...>(), ++index, list);
-    }
-
-    template<typename U>
-    inline bool fillArg(QtPrivate::List<>, int, QVariantList &)
-    {
-        return true;
     }
 
     template<typename T>
