@@ -147,7 +147,7 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
 {
     QNetworkReply * reply = nullptr;
     int method = request.attribute(AttributeMethod).toInt();
-    QByteArray body = request.attribute(AttributeBody).toByteArray();
+    QVariant body = request.attribute(AttributeBody);
     switch (method) {
     case QRestRequest::Head:
         reply = http_->head(request);
@@ -156,10 +156,20 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         reply = http_->get(request);
         break;
     case QRestRequest::Put:
-        reply = http_->put(request, body);
+        if (body.type() == qMetaTypeId<QHttpMultiPart*>())
+            reply = http_->put(request, body.value<QHttpMultiPart*>());
+        else if (body.type() == qMetaTypeId<QIODevice*>())
+            reply = http_->put(request, body.value<QIODevice*>());
+        else
+            reply = http_->put(request, body.toByteArray());
         break;
     case QRestRequest::Post:
-        reply = http_->post(request, body);
+        if (body.type() == qMetaTypeId<QHttpMultiPart*>())
+            reply = http_->post(request, body.value<QHttpMultiPart*>());
+        else if (body.type() == qMetaTypeId<QIODevice*>())
+            reply = http_->post(request, body.value<QIODevice*>());
+        else
+            reply = http_->post(request, body.toByteArray());
         break;
     case QRestRequest::Delete:
         reply = http_->deleteResource(request);

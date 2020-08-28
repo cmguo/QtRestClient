@@ -158,7 +158,7 @@ private:
     virtual void apply(QRestJson & json, QRestRequest & req) const;
 
 protected:
-    virtual QByteArray getBody(QRestJson & json) const = 0;
+    virtual QVariant getBody(QRestJson & json, QMap<char const *, QByteArray> & headers) const = 0;
 
 private:
     char const * name_;
@@ -177,8 +177,9 @@ public:
     }
 
 private:
-    virtual QByteArray getBody(QRestJson & json) const
+    virtual QVariant getBody(QRestJson & json, QMap<char const *, QByteArray> & headers) const
     {
+        headers.insert("Content-Type", "application/json");
         return json.toJson(value_);
     }
 
@@ -198,9 +199,11 @@ public:
     }
 
 private:
-    virtual QByteArray getBody(QRestJson &) const
+    virtual QVariant getBody(QRestJson &, QMap<char const *, QByteArray> & headers) const
     {
-        return value_->readAll();
+        for (QByteArray k : value_->dynamicPropertyNames())
+            headers.insert(k, value_->property(k).toByteArray());
+        return QVariant::fromValue(value_);
     }
 
 private:

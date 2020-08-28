@@ -3,6 +3,7 @@
 
 #include <QUrl>
 #include <QUrlQuery>
+#include <QIODevice>
 
 void QRestArg::apply(QRestJson & json, QRestRequest & req) const
 {
@@ -53,6 +54,8 @@ QBodyBase::QBodyBase(char const * name)
 
 void QBodyBase::apply(QRestJson &json, QRestRequest &req) const
 {
-    req.setHeader("Content-Type", "application/json");
-    req.setBody(getBody(json));
+    QMap<char const *, QByteArray> headers;
+    QVariant body = getBody(json, headers);
+    if (!body.isNull())
+        req.setBody(name_, headers, body);
 }

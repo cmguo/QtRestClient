@@ -7,6 +7,8 @@
 #include <QUrlQuery>
 #include <QMap>
 #include <QVector>
+#include <QVariant>
+#include <QHttpPart>
 
 class QNetworkRequest;
 class QRestArg;
@@ -46,7 +48,7 @@ public:
         return url_;
     }
 
-    QByteArray const & body() const
+    QVariant const & body() const
     {
         return body_;
     }
@@ -69,6 +71,13 @@ public:
 
     void setBody(QByteArray const & body);
 
+    void setBody(QIODevice * body);
+
+    void setBody(QMap<char const *, QByteArray> const & headers, QVariant const & body);
+
+    // multi-part
+    void setBody(QByteArray const & key, QMap<char const *, QByteArray> const & headers, QVariant const & body);
+
 public:
     void toRequest(QRestClient & client, QNetworkRequest & req);
 
@@ -88,7 +97,7 @@ private:
     QVector<QRestArg const *> args_;
     QUrlQuery query_;
     QMap<char const *, QByteArray> headers_;
-    QByteArray body_;
+    QVariant body_;
 };
 
 #endif // QRESTREQUEST_H

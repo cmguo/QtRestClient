@@ -2,6 +2,7 @@
 #include "qrestarg.h"
 #include "qrestclient.h"
 
+#include <QHttpMultiPart>
 #include <QNetworkRequest>
 
 QRestRequest::QRestRequest(QRestRequest::Method method, const char *url)
@@ -21,9 +22,42 @@ void QRestRequest::setHeader(const char *key, const QByteArray &value)
     headers_.insert(key, value);
 }
 
-void QRestRequest::setBody(const QByteArray &body)
+void QRestRequest::setBody(QByteArray const & body)
 {
     body_ = body;
+}
+
+void QRestRequest::setBody(QIODevice *body)
+{
+    for (QByteArray k : body->dynamicPropertyNames())
+        headers_.insert(k, body->property(k).toByteArray());
+    body_ = QVariant::fromValue(body);
+}
+
+void QRestRequest::setBody(QMap<char const *, QByteArray> const & headers, const QVariant &body)
+{
+    assert(!body_.isValid());
+    headers_.unite(headers);
+    body_ = body;
+}
+
+void QRestRequest::setBody(const QByteArray &key, QMap<char const *, QByteArray> const & headers, const QVariant &body)
+{
+    if (key.isNull())
+        return setBody(headers, body);
+    if (!body_.isValid()) {
+        body_ = QVariant::fromValue(new QHttpMultiPart());
+    }
+    QHttpMultiPart * multiPart = body_.value<QHttpMultiPart*>();
+    assert(multiPart != nullptr);
+    QHttpPart part;
+    for (auto iter = headers.begin(); iter != headers.end(); ++iter)
+        part.setRawHeader(iter.key(), iter.value());
+    if (body.value<QIODevice*>())
+        part.setBodyDevice(body.value<QIODevice*>());
+    else
+        part.setBody(body.toByteArray());
+    multiPart->append(part);
 }
 
 void QRestRequest::toRequest(QRestClient & client, QNetworkRequest &req)
