@@ -18,7 +18,8 @@ QQueryBase::QQueryBase(char const * name, QString value)
 
 void QQueryBase::apply(QRestRequest &req) const
 {
-    req.url_query().addQueryItem(name_, value_);
+    if (!value_.isNull())
+        req.url_query().addQueryItem(name_, value_);
 }
 
 QHeaderBase::QHeaderBase(char const * name, QString value)
@@ -29,7 +30,8 @@ QHeaderBase::QHeaderBase(char const * name, QString value)
 
 void QHeaderBase::apply(QRestRequest &req) const
 {
-    req.setHeader(name_, value_.toUtf8());
+    if (!value_.isNull())
+        req.setHeader(name_, value_.toUtf8());
 }
 
 QPathBase::QPathBase(char const * name, QString value)
