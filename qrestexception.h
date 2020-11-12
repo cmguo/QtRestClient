@@ -17,7 +17,7 @@ public:
         return code_;
     }
 
-private:
+public:
     virtual char const* what() const noexcept
     {
         return msg_.data();

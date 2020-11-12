@@ -156,18 +156,18 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         reply = http_->get(request);
         break;
     case QRestRequest::Put:
-        if (body.type() == qMetaTypeId<QHttpMultiPart*>())
-            reply = http_->put(request, body.value<QHttpMultiPart*>());
-        else if (body.type() == qMetaTypeId<QIODevice*>())
-            reply = http_->put(request, body.value<QIODevice*>());
+        if (auto part = body.value<QHttpMultiPart*>())
+            reply = http_->put(request, part);
+        else if (auto io = body.value<QIODevice*>())
+            reply = http_->put(request, io);
         else
             reply = http_->put(request, body.toByteArray());
         break;
     case QRestRequest::Post:
-        if (body.type() == qMetaTypeId<QHttpMultiPart*>())
-            reply = http_->post(request, body.value<QHttpMultiPart*>());
-        else if (body.type() == qMetaTypeId<QIODevice*>())
-            reply = http_->post(request, body.value<QIODevice*>());
+        if (auto part = body.value<QHttpMultiPart*>())
+            reply = http_->post(request, part);
+        else if (auto io = body.value<QIODevice*>())
+            reply = http_->post(request, io);
         else
             reply = http_->post(request, body.toByteArray());
         break;
