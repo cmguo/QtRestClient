@@ -67,6 +67,9 @@ public:
         return json_;
     }
 
+signals:
+    void onErrorReply(QNetworkReply * reply);
+
 public:
     static void test();
 

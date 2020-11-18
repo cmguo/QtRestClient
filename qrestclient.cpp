@@ -95,7 +95,7 @@ QPromise<QByteArray> QRestClient::request(QRestRequest & req)
     request.setAttribute(AttributeMethod, static_cast<int>(req.method()));
     request.setAttribute(AttributeBody, req.body());
     QtPromise::QPromise<QNetworkReply *> reply = interceptors_->intercept(request);
-    return reply.then([=](QNetworkReply * reply) {
+    return reply.then([](QNetworkReply * reply) {
         reply->deleteLater();
         if (reply->error() == QNetworkReply::NoError) {
             return reply->readAll();
@@ -175,16 +175,18 @@ QtPromise::QPromise<QNetworkReply *> QRestClient::intercept(QNetworkRequest & re
         reply = http_->deleteResource(request);
         break;
     }
-    QPromise<QNetworkReply *> result([reply](
+    QPromise<QNetworkReply *> result([this, reply](
                                   const QPromiseResolve<QNetworkReply *>& resolve) {
         auto callback = [=]() {
+            if (reply->error())
+                emit onErrorReply(reply);
             resolve(reply);
         };
         if (reply->isFinished()) {
             callback();
             return;
         }
-        QObject::connect(reply, &QNetworkReply::finished, reply, callback, Qt::QueuedConnection);
+        QObject::connect(reply, &QNetworkReply::finished, this, callback, Qt::QueuedConnection);
     });
     QVariant timeout = request.attribute(AttributeTimeout);
     if (timeout.isValid()) {
