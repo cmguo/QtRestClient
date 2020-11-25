@@ -164,8 +164,32 @@ private:
     char const * name_;
 };
 
+template <typename T>
+struct QBodyIsSingleValue
+{
+    static constexpr bool value = false;
+};
 
-template <typename T, char const * N = nullptr>
+template <>
+struct QBodyIsSingleValue<QIODevice*>
+{
+    static constexpr bool value = true;
+};
+
+template <>
+struct QBodyIsSingleValue<QByteArray>
+{
+    static constexpr bool value = true;
+};
+
+template <>
+struct QBodyIsSingleValue<QString>
+{
+    static constexpr bool value = true;
+};
+
+template <typename T, char const * N = nullptr,
+          bool JSON = QBodyIsSingleValue<T>::value>
 class QBody : public QBodyBase
 {
 public:
@@ -187,12 +211,12 @@ private:
     T value_;
 };
 
-template <char const * N>
-class QBody<QIODevice*, N> : public QBodyBase
+template <typename T, char const * N>
+class QBody<T, N, true> : public QBodyBase
 {
 public:
-    typedef QIODevice* type;
-    QBody(QIODevice* value)
+    typedef T type;
+    QBody(T value)
         : QBodyBase(N)
         , value_(value)
     {
@@ -201,13 +225,17 @@ public:
 private:
     virtual QVariant getBody(QRestJson &, QMap<char const *, QByteArray> & headers) const
     {
-        for (QByteArray k : value_->dynamicPropertyNames())
-            headers.insert(k, value_->property(k).toByteArray());
-        return QVariant::fromValue(value_);
+        QVariant value = QVariant::fromValue(value_);
+        if (QMetaType::typeFlags(value.userType()).testFlag(QMetaType::PointerToQObject)) {
+            QObject * obj = value.value<QObject*>();
+            for (QByteArray k : obj->dynamicPropertyNames())
+                headers.insert(k, obj->property(k).toByteArray());
+        }
+        return value;
     }
 
 private:
-    QIODevice* value_;
+    T value_;
 };
 
 #endif // QRESTARG_H
