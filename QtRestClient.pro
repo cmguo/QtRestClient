@@ -6,8 +6,6 @@ DEFINES += QTRESTCLIENT_LIBRARY
 
 CONFIG += c++17
 
-include(../config.pri)
-
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -71,22 +69,15 @@ unix {
 }
 !isEmpty(target.path): INSTALLS += target
 
-INCLUDEPATH += $$PWD/../QtPromise/src
+include($$(applyConanPlugin))
 
-INCLUDEPATH += $$PWD/../qtpromise/src/qtpromise $$PWD/../qtpromise/include
-DEPENDPATH += $$PWD/../qtpromise/src/qtpromise
+QMAKE_CXXFLAGS += /utf-8
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializer
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializerd
-else:mac: LIBS += -F$$OUT_PWD/../QtJsonSerializer/lib -framework QtJsonSerializer
-else:unix: LIBS += -L$$OUT_PWD/../QtJsonSerializer/lib/ -lQt5JsonSerializer
+CONFIG(debug, debug|release) {
+    TARGET = $$join(TARGET,,,d)
+}
 
-INCLUDEPATH += $$OUT_PWD/../QtJsonSerializer/include/
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../log4qt/release/ -llog4qt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../log4qt/debug/ -llog4qtd
-else:unix: LIBS += -L$$OUT_PWD/../log4qt/ -llog4qt
-
-INCLUDEPATH += $$PWD/../log4qt
-INCLUDEPATH += $$PWD/../log4qt/src
-DEPENDPATH += $$PWD/../log4qt
+CONFIG(release, debug|release) {
+    QMAKE_CXXFLAGS+=/Zi
+    QMAKE_LFLAGS+= /INCREMENTAL:NO /Debug
+}
