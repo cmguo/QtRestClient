@@ -13,9 +13,11 @@ class ConanConfig(QtConanFile):
     name = package_name
     version = package_version
 
-    git_url = "git@github.com:cmguo/QtRestClient.git"
+    git_url = "git@gitlab.xiaoheiban.cn:windows/QtRestClient.git"
 
     requires = "qtpromise/v0.5.0@cmguo/stable", "QtJsonSerializer/3.x@cmguo/stable", "log4qt/master@cmguo/stable"
+
+    exports_sources = f"../{name}*"
 
 
 if __name__ == '__main__':
