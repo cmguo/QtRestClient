@@ -1,0 +1,11 @@
+[requires]
+qtpromise/v0.5.0@cmguo/stable
+QtJsonSerializer/3.x@cmguo/stable
+log4qt/master@cmguo/stable
+
+
+[generators]
+qmake
+cmake
+
+[options]

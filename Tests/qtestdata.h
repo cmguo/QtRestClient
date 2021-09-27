@@ -38,6 +38,8 @@ public:
 public:
     QTestData();
 
+    friend QDebug operator<<(QDebug debug, QTestData const & data);
+
 private:
     int value1_ = 0;
     QString value2_;
@@ -97,7 +99,7 @@ Q_REST_DECLARE_WRAPPER_TEMPLATE(QTestResultT)
 #include "qrestservice.h"
 #include "qrestarg.h"
 
-class QTRESTCLIENT_EXPORT QTestService : public QRestService
+class QTestService : public QRestService
 {
 public:
     Q_REST_RESULT_WRAPPER(QTestResultT)
@@ -114,7 +116,7 @@ public:
     static void stest();
 
 public:
-    Q_REST_POST("test", test, QTestData(QQuery<K1>, QHeader<Ticket>))
+    Q_RESTD_POST("test", test, QTestData(QQuery<K1>, QHeader<Ticket>))
     Q_REST_POST("test2", test2, QTestData())
 };
 
