@@ -15,6 +15,9 @@
 + 异步：与[QtPromise](https://github.com/simonbrunel/qtpromise)结合，返回未来的（promise）数据
 + 简化REST服务定义：通过预编译宏简化服务接口实现
 
+# 方案说明
+[基于 Qt 的 REST 网络框架](https://blog.csdn.net/luansxx/article/details/120796569)
+
 # 使用：
 定义返回结果的报文格式（包括数据，QVariant类型）：
 ```cpp
