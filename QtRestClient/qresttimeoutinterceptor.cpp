@@ -1,7 +1,5 @@
 #include "qresttimeoutinterceptor.h"
 
-#include <qpromiseexceptions.h>
-
 #include <QNetworkRequest>
 
 extern QNetworkRequest::Attribute AttributeTimeout;

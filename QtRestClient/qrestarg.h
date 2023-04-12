@@ -41,38 +41,70 @@ public:
     }
 };
 
+#define MACRO_GET_1(str, i) \
+    (sizeof(str) > (i) ? str[(i)] : 0)
+
+#define MACRO_GET_4(str, i) \
+    MACRO_GET_1(str, i+0),  \
+    MACRO_GET_1(str, i+1),  \
+    MACRO_GET_1(str, i+2),  \
+    MACRO_GET_1(str, i+3)
+
+#define MACRO_GET_16(str, i) \
+    MACRO_GET_4(str, i+0),   \
+    MACRO_GET_4(str, i+4),   \
+    MACRO_GET_4(str, i+8),   \
+    MACRO_GET_4(str, i+12)
+
+#define MACRO_GET_64(str, i) \
+    MACRO_GET_16(str, i+0),  \
+    MACRO_GET_16(str, i+16), \
+    MACRO_GET_16(str, i+32), \
+    MACRO_GET_16(str, i+48)
+
+#define MACRO_GET_STR(str) MACRO_GET_64(str, 0), 0 // guard for longer strings
+
+#define REST_KEY(str) std::integer_sequence<char, MACRO_GET_STR(str)>
+
+template <char... chars>
+char const * rest_key(std::integer_sequence<char, chars...>)
+{
+    static constexpr char str[sizeof...(chars) + 1] = { chars..., '\0' };
+    return str;
+}
+
 class QTRESTCLIENT_EXPORT QQueryBase : public QRestArg
 {
 public:
     QQueryBase(char const * name, QString value);
 
 private:
-    virtual void apply(QRestRequest & req) const;
+    void apply(QRestRequest & req) const override;
 
 private:
     char const * name_;
     QString value_;
 };
 
-template <char const * const N, typename T = QVariantEx>
+template <typename K, typename T = QVariantEx>
 class QQuery : public QQueryBase
 {
 public:
     typedef T type;
     QQuery(T const & value)
-        : QQueryBase(N, QVariantEx(value).toString())
+        : QQueryBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
 
-template <char const * const N>
-class QQuery<N, QVariantEx> : public QQueryBase
+template <typename K>
+class QQuery<K, QVariantEx> : public QQueryBase
 {
 public:
     typedef QVariant type;
     template <typename T>
     QQuery(T const & value)
-        : QQueryBase(N, QVariantEx(value).toString())
+        : QQueryBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
@@ -83,32 +115,32 @@ public:
     QHeaderBase(char const * name, QString value);
 
 private:
-    virtual void apply(QRestRequest & req) const;
+    void apply(QRestRequest & req) const override;
 
 private:
     char const * name_;
     QString value_;
 };
 
-template <char const * N, typename T = QVariantEx>
+template <typename K, typename T = QVariantEx>
 class QHeader : public QHeaderBase
 {
 public:
     typedef T type;
     QHeader(T const & value)
-        : QHeaderBase(N, QVariantEx(value).toString())
+        : QHeaderBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
 
-template <char const * const N>
-class QHeader<N, QVariantEx> : public QHeaderBase
+template <typename K>
+class QHeader<K, QVariantEx> : public QHeaderBase
 {
 public:
     typedef QVariant type;
     template <typename T>
     QHeader(T const & value)
-        : QHeaderBase(N, QVariantEx(value).toString())
+        : QHeaderBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
@@ -119,32 +151,32 @@ public:
     QPathBase(char const * name, QString value);
 
 private:
-    virtual void apply(QRestRequest & req) const;
+    void apply(QRestRequest & req) const override;
 
 private:
     char const * name_;
     QString value_;
 };
 
-template <char const * N, typename T = QVariantEx>
+template <typename K, typename T = QVariantEx>
 class QPath : public QPathBase
 {
 public:
     typedef T type;
     QPath(T const & value)
-        : QPathBase(N, QVariantEx(value).toString())
+        : QPathBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
 
-template <char const * const N>
-class QPath<N, QVariantEx> : public QPathBase
+template <typename K>
+class QPath<K, QVariantEx> : public QPathBase
 {
 public:
     typedef QVariant type;
     template <typename T>
     QPath(T const & value)
-        : QPathBase(N, QVariantEx(value).toString())
+        : QPathBase(rest_key(K()), QVariantEx(value).toString())
     {
     }
 };
@@ -155,7 +187,7 @@ public:
     QBodyBase(char const * name = nullptr);
 
 private:
-    virtual void apply(QRestJson & json, QRestRequest & req) const;
+    void apply(QRestJson & json, QRestRequest & req) const override;
 
 protected:
     virtual QVariant getBody(QRestJson & json, QMap<char const *, QByteArray> & headers) const = 0;

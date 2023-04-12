@@ -6,6 +6,7 @@
 #include "qrestbean.h"
 
 #include <QObject>
+#include <QVariant>
 
 class QTestSubData : QRestBean<QTestSubData>
 {
@@ -96,16 +97,13 @@ public:
 
 Q_REST_DECLARE_WRAPPER_TEMPLATE(QTestResultT)
 
-#include "qrestservice.h"
+#include "qrestservice.hpp"
 #include "qrestarg.h"
 
 class QTestService : public QRestService
 {
 public:
     Q_REST_RESULT_WRAPPER(QTestResultT)
-
-    Q_REST_KEY(K1, "k1")
-    Q_REST_KEY(Ticket, "ticket")
 
 public:
     QTestService()
@@ -116,7 +114,7 @@ public:
     static void stest();
 
 public:
-    Q_RESTD_POST("test", test, QTestData(QQuery<K1>, QHeader<Ticket>))
+    Q_RESTD_POST("test", test, QTestData(QQuery<REST_KEY("k1")>, QHeader<REST_KEY("Ticket")>))
     Q_REST_POST("test2", test2, QTestData())
 };
 
