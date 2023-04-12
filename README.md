@@ -98,9 +98,6 @@ class QTRESTCLIENT_EXPORT QTestService : public QRestService
 public:
     Q_REST_RESULT_WRAPPER(QTestResultT)
 
-    Q_REST_KEY(K1, "k1") // 定义参数的名称，可以用于Query、Header等
-    Q_REST_KEY(Ticket, "ticket")
-
 public:
     QTestService()
         : QRestService("http://www.baidu.com/")
@@ -108,7 +105,7 @@ public:
     }
 
 public:
-    Q_REST_POST("test", test, QTestData(QQuery<K1>, QHeader<Ticket>))
+    Q_REST_POST("test", test, QTestData(QQuery<REST_KEY("k1")>, QHeader<REST_KEY("Ticket")>))
 };
 ```
 使用Rest服务
