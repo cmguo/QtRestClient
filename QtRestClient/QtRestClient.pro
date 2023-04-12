@@ -6,9 +6,6 @@ DEFINES += QTRESTCLIENT_LIBRARY
 
 CONFIG += c++17
 
-include($$(applyCommonConfig))
-include($$(applyConanPlugin))
-
 include(../config.pri)
 
 # The following define makes your compiler emit warnings if you use
@@ -43,6 +40,7 @@ HEADERS += \
     qjsonwrapperconvertor.h \
     qrestarg.h \
     qrestbean.h \
+    qrestboostloginterceptor.h \
     qrestclient.h \
     qrestclient.hpp \
     qrestexception.h \
@@ -60,8 +58,34 @@ HEADERS += \
     qrestservice.hpp \
     qresttimeoutinterceptor.h
 
+CONFIG(log4qt) {
+DEFINES += HAVE_LOG4QT
+SOURCES += \
+    qrestlog4qtinterceptor.cpp
+HEADERS += \
+    qrestlog4qtinterceptor.h
+}
+
+CONFIG(boostlog) {
+DEFINES += HAVE_BOOSTLOG
+SOURCES += \
+    qrestboostloginterceptor.cpp
+HEADERS += \
+    qrestboostloginterceptor.h
+}
+
 includes.files = $$PWD/*.h $$PWD/*.hpp
 includes.path = $$[QT_INSTALL_HEADERS]/QtRestClient
 target.path = $$[QT_INSTALL_LIBS]
 
 INSTALLS += includes
+
+INCLUDEPATH += $$PWD/../../QtPromise/include
+DEPENDPATH += $$PWD/../../QtPromise/src/qtpromise
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../QtJsonSerializer/lib/ -lQt5JsonSerializer
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../QtJsonSerializer/lib/ -lQt5JsonSerializerd
+else:unix: LIBS += -L$$OUT_PWD/../../QtJsonSerializer/lib/ -lQt5JsonSerializer
+
+INCLUDEPATH += $$OUT_PWD/../../QtJsonSerializer/include
+DEPENDPATH += $$PWD/../../QtJsonSerializer/src/jsonserializer

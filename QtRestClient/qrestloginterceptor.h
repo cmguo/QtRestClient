@@ -6,15 +6,19 @@
 class QTRESTCLIENT_EXPORT QRestLogInterceptor : public QRestInterceptor
 {
 public:
-    QRestLogInterceptor();
+    static QRestLogInterceptor *create();
 
 private:
     virtual QtPromise::QPromise<QNetworkReply *> intercept(QNetworkRequest & request) override;
 
 private:
-    static void log(int seq, QNetworkRequest & request);
+    void log(int seq, QNetworkRequest & request);
 
-    static void log(int seq, QNetworkReply & reply);
+    void log(int seq, QNetworkReply & reply);
+
+    virtual bool logBody() const;
+
+    virtual void log(int level, QString const & msg) const;
 };
 
 #endif // QRESTLOGINTERCEPTOR_H
