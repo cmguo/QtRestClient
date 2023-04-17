@@ -29,23 +29,15 @@ Q_DECLARE_METATYPE(QTestSubData)
 class QTestData : QRestBean<QTestData>
 {
     Q_GADGET
-
-public:
-    Q_PROPERTY(int value1 MEMBER value1_)
-    Q_PROPERTY(QString value2 MEMBER value2_)
-    Q_PROPERTY(QTestSubData subData MEMBER subData_)
-    Q_PROPERTY(QList<QTestSubData> subDatas MEMBER subDatas_)
+    QREST_FIELD(int, value1)
+    QREST_FIELD(QString, value2)
+    QREST_FIELD(QTestSubData, subData)
+    QREST_FIELD(QList<QTestSubData>, subDatas)
 
 public:
     QTestData();
 
     friend QDebug operator<<(QDebug debug, QTestData const & data);
-
-private:
-    int value1_ = 0;
-    QString value2_;
-    QTestSubData subData_;
-    QList<QTestSubData> subDatas_;
 };
 
 Q_DECLARE_METATYPE(QTestData)

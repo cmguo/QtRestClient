@@ -8,8 +8,8 @@ QTestSubData::QTestSubData()
 }
 
 QTestData::QTestData()
-    : value1_(0)
-    , value2_("ccc")
+    : value1(0)
+    , value2("ccc")
 {
 }
 
@@ -21,7 +21,7 @@ QTestResult::QTestResult()
 
 QDebug operator<<(QDebug debug, const QTestData &data)
 {
-    debug << data.value1_ << data.value2_;
+    debug << data.value1 << data.value2;
     return debug;
 }
 

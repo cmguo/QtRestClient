@@ -83,4 +83,9 @@ struct QMetaTypeId< SINGLE_ARG_TEMPLATE<T> > \
     } \
 };
 
+#define QREST_FIELD(type, name) \
+public: \
+    type name = type(); \
+    Q_PROPERTY(type name MEMBER name)
+
 #endif // QRESTBEAN_H
