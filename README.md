@@ -74,16 +74,8 @@ Q_REST_DECLARE_WRAPPER_TEMPLATE(QTestResultT)
 class QTestData
 {
     Q_GADGET
-public:
-    Q_PROPERTY(int value1 MEMBER value1_)
-    Q_PROPERTY(QString value2 MEMBER value2_)
-
-public:
-    QTestData();
-
-private:
-    int value1_;
-    QString value2_;
+    QREST_FIELD(int, value1)
+    QREST_FIELD(QString, value2)
 };
 
 Q_DECLARE_METATYPE(QTestData)
@@ -112,6 +104,6 @@ public:
 ```cpp
 QTestService service;
 service.test(1, QString("ccc")).then([](QTestData d) {
-   (void)d;
+   qDebug() << d.value1 << d.value2;
 }).wait();
 ```
