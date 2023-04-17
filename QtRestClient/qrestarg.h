@@ -8,6 +8,8 @@
 #include <QVariant>
 #include <QIODevice>
 
+#include <type_traits>
+
 class QRestRequest;
 class QRestJson;
 
@@ -44,27 +46,39 @@ public:
 #define MACRO_GET_1(str, i) \
     (sizeof(str) > (i) ? str[(i)] : 0)
 
-#define MACRO_GET_4(str, i) \
+#define MACRO_GET_2(str, i) \
     MACRO_GET_1(str, i+0),  \
-    MACRO_GET_1(str, i+1),  \
-    MACRO_GET_1(str, i+2),  \
-    MACRO_GET_1(str, i+3)
+    MACRO_GET_1(str, i+1)
+
+#define MACRO_GET_4(str, i) \
+    MACRO_GET_2(str, i+0),  \
+    MACRO_GET_2(str, i+2)
+
+#define MACRO_GET_8(str, i) \
+    MACRO_GET_4(str, i+0),  \
+    MACRO_GET_4(str, i+4)
 
 #define MACRO_GET_16(str, i) \
-    MACRO_GET_4(str, i+0),   \
-    MACRO_GET_4(str, i+4),   \
-    MACRO_GET_4(str, i+8),   \
-    MACRO_GET_4(str, i+12)
+    MACRO_GET_8(str, i+0),   \
+    MACRO_GET_8(str, i+8)
+
+#define MACRO_GET_32(str, i) \
+    MACRO_GET_16(str, i+0),  \
+    MACRO_GET_16(str, i+16)
 
 #define MACRO_GET_64(str, i) \
-    MACRO_GET_16(str, i+0),  \
-    MACRO_GET_16(str, i+16), \
-    MACRO_GET_16(str, i+32), \
-    MACRO_GET_16(str, i+48)
+    MACRO_GET_32(str, i+0),  \
+    MACRO_GET_32(str, i+32)
 
-#define MACRO_GET_STR(str) MACRO_GET_64(str, 0), 0 // guard for longer strings
-
-#define REST_KEY(str) std::integer_sequence<char, MACRO_GET_STR(str)>
+#define REST_KEY(str) std::conditional_t<(sizeof(str) > 32), \
+    std::integer_sequence<char, MACRO_GET_64(str, 0)>, \
+    std::conditional_t<(sizeof(str) > 16), \
+        std::integer_sequence<char, MACRO_GET_32(str, 0)>, \
+        std::conditional_t<(sizeof(str) > 8), \
+            std::integer_sequence<char, MACRO_GET_16(str, 0)>, \
+            std::conditional_t<(sizeof(str) > 4), \
+                std::integer_sequence<char, MACRO_GET_8(str, 0)>, \
+                std::integer_sequence<char, MACRO_GET_4(str, 0)>>>>>
 
 template <char... chars>
 char const * rest_key(std::integer_sequence<char, chars...>)

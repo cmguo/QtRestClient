@@ -54,9 +54,9 @@ protected:
             : FunctionBase(service, method, path, funcName, sinvoke)
         {
         }
-        QtPromise::QPromise<T> operator()(Args const & ...args) const
+        QtPromise::QPromise<T> operator()(typename Args::type const & ...args) const
         {
-            QRestRequest request(method_, path_, args...);
+            QRestRequest request(method_, path_, Args(args)...);
             return service_->client_->request<R, T>(request);
         }
     private:

@@ -114,7 +114,7 @@ public:
     static void stest();
 
 public:
-    Q_RESTD_POST("test", test, QTestData(QQuery<REST_KEY("k1")>, QHeader<REST_KEY("Ticket")>))
+    Q_RESTD_POST("test", test, QTestData(QQuery<REST_KEY("key")>, QHeader<REST_KEY("Ticket")>))
     Q_REST_POST("test2", test2, QTestData())
 };
 

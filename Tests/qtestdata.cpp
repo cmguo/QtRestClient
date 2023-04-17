@@ -29,7 +29,7 @@ void QTestService::stest()
 {
     QTestService * service = new QTestService();
 
-    service->test(QByteArray{"k1"}, QByteArray{"ticket"}).then([] (QTestData data) {
+    service->test("k1", "ticket").then([] (QTestData data) {
         qDebug() << data;
     }).tapFail([](std::exception & e) {
         qDebug() << e.what();
